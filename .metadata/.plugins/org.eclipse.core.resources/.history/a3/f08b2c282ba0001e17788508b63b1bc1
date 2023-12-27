@@ -1,0 +1,17 @@
+#include "MPU6050.h"
+#include "main.h"
+
+I2C_HandleTypeDef hi2c1;
+uint8_t checkMPU6050Ready()
+{
+	if((HAL_I2C_IsDeviceReady(&hi2c1,(MPU6050ADDR<<1)+0, 1, 100)==HAL_OK))
+	{
+		return 1;
+	}
+
+	return 0;
+
+}
+
+
+
