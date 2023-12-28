@@ -1,3 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">&#x0A;<refactoring comment="Delete resource &apos;SubController/Core/Src/MPU6050.c&apos;" deleteContents="false" description="Delete resource &apos;SubController/Core/Src/MPU6050.c&apos;" element1="/SubController/Core/Src/MPU6050.c" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1703181688196"/>&#x0A;<refactoring comment="Delete resource &apos;SubController/Debug/Core/Src&apos;" deleteContents="false" description="Delete resource &apos;SubController/Debug/Core/Src&apos;" element1="/SubController/Debug/Core/Src" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1703186248292"/>
-</session>
