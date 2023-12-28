@@ -1,5 +1,5 @@
 ../Core/Src/MPU6050.c:5:9:checkMPU6050Ready	2
 ../Core/Src/MPU6050.c:13:9:i2cWriteRegMPU6050	1
 ../Core/Src/MPU6050.c:19:9:MPU6050init	8
-../Core/Src/MPU6050.c:60:9:MPU6050readDataDMA	1
-../Core/Src/MPU6050.c:69:6:MPU6050convertRawData	1
+../Core/Src/MPU6050.c:60:9:MPU6050readDataDMA	4
+../Core/Src/MPU6050.c:71:6:MPU6050convertRawData	1

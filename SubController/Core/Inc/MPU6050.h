@@ -9,7 +9,7 @@
 #include "stm32f4xx.h"
 
 // device address
-#define MPU6050ADDR (0x68<<1)
+#define MPU6050ADDR 		  (0x68<<1)
 //Read and write bits for I2C
 #define WriteMask   			0x00
 #define ReadMask    			0x01
@@ -20,6 +20,7 @@
 #define MPU6050_ACCEL_CONFIG	0x1C  //left as default +-2g
 #define MPU6050_INT_ENABLE_REG  0x38
 #define MPU6050_PWR_MGMT_1_REG  0x6B
+#define WHO_AM_I_REG            0x75
 
 // data start address
 #define MPU6050_DATA_START_ADD  0x3B

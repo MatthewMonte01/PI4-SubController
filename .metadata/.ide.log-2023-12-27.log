@@ -1,0 +1,23 @@
+2023-12-28 12:24:10,669 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:10,720 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:10,782 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:10,782 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:10,784 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:10,784 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:10,838 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:10,838 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:10,839 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:10,839 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:10,846 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2023-12-28 12:24:17,836 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:17,836 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:17,881 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:17,881 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:17,882 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:17,882 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:17,929 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:17,930 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:17,931 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:17,931 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2023-12-28 12:24:17,938 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2023-12-28 12:24:24,974 [INFO] Mcu:1675 - InternalPropertyChange: try BijectiveRequest:Bank1 with Single/Dual Lines
