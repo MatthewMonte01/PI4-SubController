@@ -1,10 +1,10 @@
 #include "MPU6050.h"
 #include "stm32f4xx.h"
-extern I2C_HandleTypeDef hi2c3;
+extern I2C_HandleTypeDef hi2c1;
 
 uint8_t checkMPU6050Ready()
 {
-	if((HAL_I2C_IsDeviceReady(&hi2c3,MPU6050ADDR+0,1,100)==HAL_OK))
+	if((HAL_I2C_IsDeviceReady(&hi2c1,MPU6050ADDR+0,1,100)==HAL_OK))
 	{
 		return 1;
 	}
@@ -12,7 +12,7 @@ uint8_t checkMPU6050Ready()
 }
 uint8_t i2cWriteRegMPU6050(uint16_t devAddr, uint16_t RegAddr, uint8_t* data){
 
-	return(HAL_I2C_Mem_Write(&hi2c3,devAddr,RegAddr, 1, data ,1,HAL_MAX_DELAY)==HAL_OK);
+	return(HAL_I2C_Mem_Write(&hi2c1,devAddr,RegAddr, 1, data ,1,HAL_MAX_DELAY)==HAL_OK);
 
 }
 
