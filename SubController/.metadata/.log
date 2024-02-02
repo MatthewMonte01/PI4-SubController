@@ -17,3 +17,49 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64 C:\Users\bozo2\Desktop
 
 !ENTRY org.eclipse.core.jobs 2 2 2023-12-29 22:21:09.782
 !MESSAGE Job found still running after platform shutdown.  Jobs should be canceled by the plugin that scheduled them during shutdown: org.eclipse.ui.internal.Workbench$39
+!SESSION 2024-01-20 21:32:46.290 -----------------------------------------------
+eclipse.buildId=Version 1.14.0
+java.version=17.0.8.1
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_CA
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-01-20 21:33:27.388
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-01-20 21:33:27.395
+!MESSAGE Log4j2 initialized with config file C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-01-20 21:33:31.593
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-01-20 21:33:57.240 -----------------------------------------------
+eclipse.buildId=Version 1.14.0
+java.version=17.0.8.1
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_CA
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-01-20 21:34:20.873
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-01-20 21:34:20.874
+!MESSAGE Log4j2 initialized with config file C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-01-20 21:34:24.104
+!MESSAGE Started RMI Server, listening on port 41337
+!SESSION 2024-01-20 21:35:00.783 -----------------------------------------------
+eclipse.buildId=Version 1.14.0
+java.version=17.0.8.1
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_CA
+Framework arguments:  C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\.project
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\.project
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-01-20 21:35:08.939
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-01-20 21:35:08.940
+!MESSAGE Log4j2 initialized with config file C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-01-20 21:35:11.981
+!MESSAGE Started RMI Server, listening on port 41337

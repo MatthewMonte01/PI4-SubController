@@ -1,5 +1,4 @@
 #include "MPU6050.h"
-#include "stm32f4xx.h"
 extern I2C_HandleTypeDef hi2c1;
 
 uint8_t checkMPU6050Ready()

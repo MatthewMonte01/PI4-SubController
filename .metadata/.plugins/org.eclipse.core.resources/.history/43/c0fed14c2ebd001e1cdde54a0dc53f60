@@ -1,0 +1,54 @@
+#include <stdint.h>
+#include "stm32f4xx.h"
+
+#ifndef INC_BAR30_H_
+#define INC_BAR30_H_
+
+#define BAR30_I2C_ADD 			    0x76<<1
+
+
+#define RESET_CMD 				    0x1E
+#define PRESSURE_CONVERSION_CMD     0x40
+#define TEMP_CONVERSION_CMD         0x50
+#define READ_RESULT_CMD             0x00
+
+#define READ_PROM_CMD_1              0xA0
+#define READ_PROM_CMD_2              0xA2
+#define READ_PROM_CMD_3              0xA4
+#define READ_PROM_CMD_4              0xA6
+#define READ_PROM_CMD_5              0xA8
+#define READ_PROM_CMD_6              0xAA
+#define READ_PROM_CMD_7              0xAC
+
+
+typedef struct
+{
+	I2C_HandleTypeDef *i2cHandle;
+	int32_t rawPressure;
+	int32_t rawTemperature;
+	int32_t actualPressure;
+	uint32_t actualTemperature;
+	uint16_t calibrationResult[8]; // calibratioResult[7]=0 for crc check
+	uint8_t rxFlag;
+	uint8_t conversionCompleteFlag;
+	int dT;
+} Bar30;
+
+uint8_t Bar30reset(Bar30* sensor);
+void Bar30init(Bar30* sensor, I2C_HandleTypeDef* i2cHandle);
+uint8_t Bar30getCalibration(Bar30* sensor);
+uint8_t Bar30convertData(Bar30* sensor);
+uint8_t Bar30CRCcheck(uint16_t* promData);
+void calculateTemperature(Bar30* sensor);
+void calculatePressure(Bar30* sensor);
+float calculateDepth(Bar30* sensor);
+HAL_StatusTypeDef initiatePressureConversion(Bar30* sensor);
+HAL_StatusTypeDef initiateTemperatureConversion(Bar30* sensor);
+HAL_StatusTypeDef readPressureData(Bar30* sensor);
+HAL_StatusTypeDef readTemperatureData(Bar30* sensor);
+
+
+
+
+#endif /* INC_BAR30_H_ */
+

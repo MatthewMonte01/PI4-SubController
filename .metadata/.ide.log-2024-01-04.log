@@ -1,0 +1,463 @@
+2024-01-04 11:27:48,234 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,348 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,350 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,350 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,354 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,354 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,355 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,355 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,463 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,463 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,465 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,465 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,587 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,587 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,593 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 11:27:48,593 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:34,924 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:34,928 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:34,928 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:34,928 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:34,930 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:34,930 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:34,930 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:34,930 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:42,220 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:42,220 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:42,221 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:42,221 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:42,222 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:42,222 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:42,223 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 16:44:42,223 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 16:59:07,544 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 16:59:07,544 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 16:59:07,545 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 16:59:07,545 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 16:59:07,547 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 16:59:07,547 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 16:59:07,547 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 16:59:07,547 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 17:01:08,861 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2024-01-04 17:01:08,951 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2024-01-04 17:01:19,455 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2024-01-04 17:01:19,535 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2024-01-04 17:01:22,731 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2024-01-04 17:01:22,814 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2024-01-04 17:02:55,611 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,611 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,612 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,612 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,613 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,613 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,614 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,614 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,690 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,690 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,692 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,692 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,769 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,770 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,772 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 17:02:55,772 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 17:03:20,304 [INFO] Gpio:277 - dependency for GPIO [ADC1, I2C1, I2C2, RCC, SPI2, SYS, TIM3, USART2, USB_OTG_FS]
+2024-01-04 17:04:29,557 [INFO] Gpio:277 - dependency for GPIO [ADC1, I2C1, I2C2, RCC, SPI2, SYS, TIM3, USART2, USB_OTG_FS]
+2024-01-04 17:05:59,628 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 703136912 Bytes (870318080)
+2024-01-04 17:06:00,853 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 266573792 Bytes (870318080)
+2024-01-04 17:06:02,571 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 333251992 Bytes (870318080)
+2024-01-04 17:06:03,102 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: SPI
+2024-01-04 17:06:03,102 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: TIM1_8
+2024-01-04 17:06:03,102 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: SYS
+2024-01-04 17:06:03,102 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: ADC
+2024-01-04 17:06:03,102 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: RCC
+2024-01-04 17:06:03,102 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: I2C
+2024-01-04 17:06:03,102 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: I2C
+2024-01-04 17:06:03,102 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: USB_OTG_FS
+2024-01-04 17:06:03,102 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: NVIC
+2024-01-04 17:06:03,102 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: USART
+2024-01-04 17:06:03,102 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: DMA
+2024-01-04 17:06:03,102 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: GPIO
+2024-01-04 17:06:03,103 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: FATFS
+2024-01-04 17:06:03,104 [INFO] CodeGenerator:807 - code generatio: config db path: C:\ST\STM32CubeIDE_1.13.1\STM32CubeIDE\plugins\com.st.stm32cube.common.mx_6.10.0.202311202037\\db\
+2024-01-04 17:06:03,121 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 17:06:03,121 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 17:06:03,125 [INFO] Argument:325 - Argument : hdmavalue: null
+2024-01-04 17:06:03,125 [INFO] Argument:327 - 	 sub Args: 
+2024-01-04 17:06:03,126 [INFO] Argument:325 - Argument : Instancevalue: DMA1_Stream0
+2024-01-04 17:06:03,126 [INFO] Argument:335 - Argument : Instancevalue: DMA1_Stream0
+2024-01-04 17:06:03,126 [INFO] Argument:325 - Argument : Initvalue: null
+2024-01-04 17:06:03,126 [INFO] Argument:327 - 	 sub Args: 
+2024-01-04 17:06:03,126 [INFO] Argument:325 - Argument : Channelvalue: DMA_CHANNEL_1
+2024-01-04 17:06:03,126 [INFO] Argument:335 - Argument : Channelvalue: DMA_CHANNEL_1
+2024-01-04 17:06:03,126 [INFO] Argument:325 - Argument : Directionvalue: DMA_PERIPH_TO_MEMORY
+2024-01-04 17:06:03,126 [INFO] Argument:335 - Argument : Directionvalue: DMA_PERIPH_TO_MEMORY
+2024-01-04 17:06:03,126 [INFO] Argument:325 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2024-01-04 17:06:03,126 [INFO] Argument:335 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2024-01-04 17:06:03,126 [INFO] Argument:325 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2024-01-04 17:06:03,126 [INFO] Argument:335 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2024-01-04 17:06:03,126 [INFO] Argument:325 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2024-01-04 17:06:03,126 [INFO] Argument:335 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2024-01-04 17:06:03,126 [INFO] Argument:325 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2024-01-04 17:06:03,126 [INFO] Argument:335 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2024-01-04 17:06:03,126 [INFO] Argument:325 - Argument : Modevalue: DMA_NORMAL
+2024-01-04 17:06:03,126 [INFO] Argument:335 - Argument : Modevalue: DMA_NORMAL
+2024-01-04 17:06:03,126 [INFO] Argument:325 - Argument : Priorityvalue: DMA_PRIORITY_HIGH
+2024-01-04 17:06:03,126 [INFO] Argument:335 - Argument : Priorityvalue: DMA_PRIORITY_HIGH
+2024-01-04 17:06:03,127 [INFO] Argument:325 - Argument : FIFOModevalue: DMA_FIFOMODE_DISABLE
+2024-01-04 17:06:03,127 [INFO] Argument:335 - Argument : FIFOModevalue: DMA_FIFOMODE_DISABLE
+2024-01-04 17:06:03,127 [INFO] Argument:325 - Argument : FIFOThresholdvalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:335 - Argument : FIFOThresholdvalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:325 - Argument : MemBurstvalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:335 - Argument : MemBurstvalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:325 - Argument : PeriphBurstvalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:335 - Argument : PeriphBurstvalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:325 - Argument : Lockvalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:335 - Argument : Lockvalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:325 - Argument : Statevalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:335 - Argument : Statevalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:325 - Argument : Parentvalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:335 - Argument : Parentvalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:325 - Argument : XferCpltCallbackvalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:335 - Argument : XferCpltCallbackvalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:325 - Argument : XferHalfCpltCallbackvalue: null
+2024-01-04 17:06:03,127 [INFO] Argument:335 - Argument : XferHalfCpltCallbackvalue: null
+2024-01-04 17:06:03,128 [INFO] Argument:325 - Argument : XferM1CpltCallbackvalue: null
+2024-01-04 17:06:03,128 [INFO] Argument:335 - Argument : XferM1CpltCallbackvalue: null
+2024-01-04 17:06:03,128 [INFO] Argument:325 - Argument : XferErrorCallbackvalue: null
+2024-01-04 17:06:03,128 [INFO] Argument:335 - Argument : XferErrorCallbackvalue: null
+2024-01-04 17:06:03,128 [INFO] Argument:325 - Argument : ErrorCodevalue: null
+2024-01-04 17:06:03,128 [INFO] Argument:335 - Argument : ErrorCodevalue: null
+2024-01-04 17:06:03,129 [INFO] Argument:325 - Argument : hdmavalue: null
+2024-01-04 17:06:03,129 [INFO] Argument:327 - 	 sub Args: 
+2024-01-04 17:06:03,129 [INFO] Argument:325 - Argument : Instancevalue: DMA1_Stream6
+2024-01-04 17:06:03,129 [INFO] Argument:335 - Argument : Instancevalue: DMA1_Stream6
+2024-01-04 17:06:03,129 [INFO] Argument:325 - Argument : Initvalue: null
+2024-01-04 17:06:03,129 [INFO] Argument:327 - 	 sub Args: 
+2024-01-04 17:06:03,129 [INFO] Argument:325 - Argument : Channelvalue: DMA_CHANNEL_1
+2024-01-04 17:06:03,129 [INFO] Argument:335 - Argument : Channelvalue: DMA_CHANNEL_1
+2024-01-04 17:06:03,129 [INFO] Argument:325 - Argument : Directionvalue: DMA_MEMORY_TO_PERIPH
+2024-01-04 17:06:03,129 [INFO] Argument:335 - Argument : Directionvalue: DMA_MEMORY_TO_PERIPH
+2024-01-04 17:06:03,129 [INFO] Argument:325 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2024-01-04 17:06:03,129 [INFO] Argument:335 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2024-01-04 17:06:03,129 [INFO] Argument:325 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2024-01-04 17:06:03,129 [INFO] Argument:335 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2024-01-04 17:06:03,129 [INFO] Argument:325 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2024-01-04 17:06:03,129 [INFO] Argument:335 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2024-01-04 17:06:03,129 [INFO] Argument:325 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2024-01-04 17:06:03,129 [INFO] Argument:335 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2024-01-04 17:06:03,129 [INFO] Argument:325 - Argument : Modevalue: DMA_NORMAL
+2024-01-04 17:06:03,129 [INFO] Argument:335 - Argument : Modevalue: DMA_NORMAL
+2024-01-04 17:06:03,129 [INFO] Argument:325 - Argument : Priorityvalue: DMA_PRIORITY_HIGH
+2024-01-04 17:06:03,130 [INFO] Argument:335 - Argument : Priorityvalue: DMA_PRIORITY_HIGH
+2024-01-04 17:06:03,130 [INFO] Argument:325 - Argument : FIFOModevalue: DMA_FIFOMODE_DISABLE
+2024-01-04 17:06:03,130 [INFO] Argument:335 - Argument : FIFOModevalue: DMA_FIFOMODE_DISABLE
+2024-01-04 17:06:03,130 [INFO] Argument:325 - Argument : FIFOThresholdvalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:335 - Argument : FIFOThresholdvalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:325 - Argument : MemBurstvalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:335 - Argument : MemBurstvalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:325 - Argument : PeriphBurstvalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:335 - Argument : PeriphBurstvalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:325 - Argument : Lockvalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:335 - Argument : Lockvalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:325 - Argument : Statevalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:335 - Argument : Statevalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:325 - Argument : Parentvalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:335 - Argument : Parentvalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:325 - Argument : XferCpltCallbackvalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:335 - Argument : XferCpltCallbackvalue: null
+2024-01-04 17:06:03,130 [INFO] Argument:325 - Argument : XferHalfCpltCallbackvalue: null
+2024-01-04 17:06:03,131 [INFO] Argument:335 - Argument : XferHalfCpltCallbackvalue: null
+2024-01-04 17:06:03,131 [INFO] Argument:325 - Argument : XferM1CpltCallbackvalue: null
+2024-01-04 17:06:03,131 [INFO] Argument:335 - Argument : XferM1CpltCallbackvalue: null
+2024-01-04 17:06:03,131 [INFO] Argument:325 - Argument : XferErrorCallbackvalue: null
+2024-01-04 17:06:03,131 [INFO] Argument:335 - Argument : XferErrorCallbackvalue: null
+2024-01-04 17:06:03,131 [INFO] Argument:325 - Argument : ErrorCodevalue: null
+2024-01-04 17:06:03,131 [INFO] Argument:335 - Argument : ErrorCodevalue: null
+2024-01-04 17:06:03,131 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 17:06:03,131 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 17:06:03,374 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\license.tmp_save
+2024-01-04 17:06:03,483 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\license.tmp
+2024-01-04 17:06:03,546 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\gpio.tmp_save
+2024-01-04 17:06:03,643 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\gpio.tmp
+2024-01-04 17:06:04,381 [WARN] IPConfigManager:99 - WARNING: Missing Config File for USB ip!!
+2024-01-04 17:06:04,408 [WARN] IPConfigManager:2946 - Warning: the RefConfig PWREx_EnableUSBVoltageDetector is not available in your config.xml file
+2024-01-04 17:06:04,454 [INFO] Middleware:1439 - No code input for Bsp Dependency
+2024-01-04 17:06:04,481 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_HalInit.tmp_save
+2024-01-04 17:06:04,582 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_HalInit.tmp
+2024-01-04 17:06:04,595 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_vars.tmp_save
+2024-01-04 17:06:04,652 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_vars.tmp
+2024-01-04 17:06:04,664 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_ext_vars.tmp_save
+2024-01-04 17:06:04,731 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_ext_vars.tmp
+2024-01-04 17:06:04,741 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_inc.tmp_save
+2024-01-04 17:06:04,802 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_inc.tmp
+2024-01-04 17:06:04,849 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\dma.tmp_save
+2024-01-04 17:06:04,933 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\dma.tmp
+2024-01-04 17:06:04,940 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\dma_GV.tmp_save
+2024-01-04 17:06:04,993 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\dma_GV.tmp
+2024-01-04 17:06:04,998 [INFO] Middleware:1439 - No code input for Bsp Dependency
+2024-01-04 17:06:05,005 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_HalInit.tmp_save
+2024-01-04 17:06:05,074 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_HalInit.tmp
+2024-01-04 17:06:05,080 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_vars.tmp_save
+2024-01-04 17:06:05,128 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_vars.tmp
+2024-01-04 17:06:05,134 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_ext_vars.tmp_save
+2024-01-04 17:06:05,181 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_ext_vars.tmp
+2024-01-04 17:06:05,184 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_inc.tmp_save
+2024-01-04 17:06:05,231 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_inc.tmp
+2024-01-04 17:06:05,247 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\Target\ffconf.h_save
+2024-01-04 17:06:05,338 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\Target\ffconf.h
+2024-01-04 17:06:05,360 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\Target\user_diskio.c_save
+2024-01-04 17:06:05,431 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\Target\user_diskio.c
+2024-01-04 17:06:05,441 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\Target\user_diskio.h_save
+2024-01-04 17:06:05,511 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\Target\user_diskio.h
+2024-01-04 17:06:05,522 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\App\fatfs.c_save
+2024-01-04 17:06:05,600 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\App\fatfs.c
+2024-01-04 17:06:05,611 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\App\fatfs.h_save
+2024-01-04 17:06:05,684 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\App\fatfs.h
+2024-01-04 17:06:05,721 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Src\stm32f4xx_it.c_save
+2024-01-04 17:06:05,886 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Src\stm32f4xx_it.c
+2024-01-04 17:06:05,903 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Inc\stm32f4xx_it.h_save
+2024-01-04 17:06:05,982 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Inc\stm32f4xx_it.h
+2024-01-04 17:06:06,015 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Src\stm32f4xx_hal_msp.c_save
+2024-01-04 17:06:06,191 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Src\stm32f4xx_hal_msp.c
+2024-01-04 17:06:06,214 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\system.tmp_save
+2024-01-04 17:06:06,292 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\system.tmp
+2024-01-04 17:06:06,390 [INFO] CodeEngine:311 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Inc\stm32f4xx_hal_conf.h_save
+2024-01-04 17:06:06,520 [INFO] CodeEngine:335 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Inc\stm32f4xx_hal_conf.h
+2024-01-04 17:06:06,573 [WARN] IPConfigManager:2946 - Warning: the RefConfig PLL2P_FOR_MCO is not available in your config.xml file
+2024-01-04 17:06:06,582 [WARN] IPConfigManager:3440 - IP not found : TIM
+2024-01-04 17:06:06,582 [WARN] IPConfigManager:3440 - IP not found : USB_OTG
+2024-01-04 17:06:06,583 [WARN] CodeGenerator:3939 - IP not found : null
+2024-01-04 17:06:06,583 [WARN] CodeGenerator:3939 - IP not found : null
+2024-01-04 17:06:06,611 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Inc\main.h_save
+2024-01-04 17:06:06,713 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Inc\main.h
+2024-01-04 17:06:06,738 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Src\main.c_save
+2024-01-04 17:06:06,889 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Src\main.c
+2024-01-04 17:06:07,575 [INFO] ProjectBuilder:3076 - Time for Copy HAL[1] : 321mS.
+2024-01-04 17:06:07,586 [INFO] ProjectBuilder:4485 - Project Generator version: 4.2.0-B44
+2024-01-04 17:06:07,977 [INFO] ConfigFileManager:1495 - The Die is : DIE421
+2024-01-04 17:06:11,103 [INFO] ProjectBuilder:4747 - Time for Generating toolchain IDE Files: 3515mS.
+2024-01-04 17:06:11,104 [INFO] ProjectBuilder:2947 - Time for Copy CMSIS : 1mS.
+2024-01-04 17:06:11,108 [INFO] ProjectBuilder:2947 - Time for Copy CMSIS : 0mS.
+2024-01-04 20:41:48,581 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,582 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,582 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,582 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,582 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,582 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,582 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,582 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,582 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,582 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,582 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,582 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,582 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,582 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,644 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,687 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,687 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,687 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,688 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,688 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,688 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,688 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,688 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,688 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,688 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,688 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,688 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,688 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,688 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:41:48,722 [INFO] ADCParametersView:116 -                Rank 1 : false
+2024-01-04 20:42:07,241 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2024-01-04 20:42:07,373 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 20:42:07,373 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 20:42:07,373 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 20:42:07,373 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 20:42:07,375 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 20:42:07,375 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 20:42:07,376 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 20:42:07,376 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 20:42:14,225 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 329095800 Bytes (972029952)
+2024-01-04 20:42:15,646 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 351799600 Bytes (972029952)
+2024-01-04 20:42:17,088 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 401604912 Bytes (972029952)
+2024-01-04 20:42:17,470 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: SPI
+2024-01-04 20:42:17,470 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: TIM1_8
+2024-01-04 20:42:17,470 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: SYS
+2024-01-04 20:42:17,470 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: ADC
+2024-01-04 20:42:17,470 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: RCC
+2024-01-04 20:42:17,470 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: I2C
+2024-01-04 20:42:17,470 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: I2C
+2024-01-04 20:42:17,470 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: USB_OTG_FS
+2024-01-04 20:42:17,470 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: NVIC
+2024-01-04 20:42:17,470 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: USART
+2024-01-04 20:42:17,470 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: DMA
+2024-01-04 20:42:17,470 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: GPIO
+2024-01-04 20:42:17,470 [INFO] BlockDiagram:2759 - set Specific Code input for plugin: FATFS
+2024-01-04 20:42:17,472 [INFO] CodeGenerator:807 - code generatio: config db path: C:\ST\STM32CubeIDE_1.13.1\STM32CubeIDE\plugins\com.st.stm32cube.common.mx_6.10.0.202311202037\\db\
+2024-01-04 20:42:17,485 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 20:42:17,485 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 20:42:17,486 [INFO] Argument:325 - Argument : hdmavalue: null
+2024-01-04 20:42:17,486 [INFO] Argument:327 - 	 sub Args: 
+2024-01-04 20:42:17,486 [INFO] Argument:325 - Argument : Instancevalue: DMA1_Stream0
+2024-01-04 20:42:17,486 [INFO] Argument:335 - Argument : Instancevalue: DMA1_Stream0
+2024-01-04 20:42:17,486 [INFO] Argument:325 - Argument : Initvalue: null
+2024-01-04 20:42:17,486 [INFO] Argument:327 - 	 sub Args: 
+2024-01-04 20:42:17,486 [INFO] Argument:325 - Argument : Channelvalue: DMA_CHANNEL_1
+2024-01-04 20:42:17,486 [INFO] Argument:335 - Argument : Channelvalue: DMA_CHANNEL_1
+2024-01-04 20:42:17,486 [INFO] Argument:325 - Argument : Directionvalue: DMA_PERIPH_TO_MEMORY
+2024-01-04 20:42:17,486 [INFO] Argument:335 - Argument : Directionvalue: DMA_PERIPH_TO_MEMORY
+2024-01-04 20:42:17,486 [INFO] Argument:325 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2024-01-04 20:42:17,486 [INFO] Argument:335 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2024-01-04 20:42:17,486 [INFO] Argument:325 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2024-01-04 20:42:17,486 [INFO] Argument:335 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2024-01-04 20:42:17,486 [INFO] Argument:325 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2024-01-04 20:42:17,486 [INFO] Argument:335 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2024-01-04 20:42:17,486 [INFO] Argument:325 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2024-01-04 20:42:17,486 [INFO] Argument:335 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2024-01-04 20:42:17,486 [INFO] Argument:325 - Argument : Modevalue: DMA_NORMAL
+2024-01-04 20:42:17,486 [INFO] Argument:335 - Argument : Modevalue: DMA_NORMAL
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : Priorityvalue: DMA_PRIORITY_HIGH
+2024-01-04 20:42:17,487 [INFO] Argument:335 - Argument : Priorityvalue: DMA_PRIORITY_HIGH
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : FIFOModevalue: DMA_FIFOMODE_DISABLE
+2024-01-04 20:42:17,487 [INFO] Argument:335 - Argument : FIFOModevalue: DMA_FIFOMODE_DISABLE
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : FIFOThresholdvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:335 - Argument : FIFOThresholdvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : MemBurstvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:335 - Argument : MemBurstvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : PeriphBurstvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:335 - Argument : PeriphBurstvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : Lockvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:335 - Argument : Lockvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : Statevalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:335 - Argument : Statevalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : Parentvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:335 - Argument : Parentvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : XferCpltCallbackvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:335 - Argument : XferCpltCallbackvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : XferHalfCpltCallbackvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:335 - Argument : XferHalfCpltCallbackvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : XferM1CpltCallbackvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:335 - Argument : XferM1CpltCallbackvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : XferErrorCallbackvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:335 - Argument : XferErrorCallbackvalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : ErrorCodevalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:335 - Argument : ErrorCodevalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:325 - Argument : hdmavalue: null
+2024-01-04 20:42:17,487 [INFO] Argument:327 - 	 sub Args: 
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : Instancevalue: DMA1_Stream6
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : Instancevalue: DMA1_Stream6
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : Initvalue: null
+2024-01-04 20:42:17,488 [INFO] Argument:327 - 	 sub Args: 
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : Channelvalue: DMA_CHANNEL_1
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : Channelvalue: DMA_CHANNEL_1
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : Directionvalue: DMA_MEMORY_TO_PERIPH
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : Directionvalue: DMA_MEMORY_TO_PERIPH
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : PeriphIncvalue: DMA_PINC_DISABLE
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : MemIncvalue: DMA_MINC_ENABLE
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : PeriphDataAlignmentvalue: DMA_PDATAALIGN_BYTE
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : MemDataAlignmentvalue: DMA_MDATAALIGN_BYTE
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : Modevalue: DMA_NORMAL
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : Modevalue: DMA_NORMAL
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : Priorityvalue: DMA_PRIORITY_HIGH
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : Priorityvalue: DMA_PRIORITY_HIGH
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : FIFOModevalue: DMA_FIFOMODE_DISABLE
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : FIFOModevalue: DMA_FIFOMODE_DISABLE
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : FIFOThresholdvalue: null
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : FIFOThresholdvalue: null
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : MemBurstvalue: null
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : MemBurstvalue: null
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : PeriphBurstvalue: null
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : PeriphBurstvalue: null
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : Lockvalue: null
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : Lockvalue: null
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : Statevalue: null
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : Statevalue: null
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : Parentvalue: null
+2024-01-04 20:42:17,488 [INFO] Argument:335 - Argument : Parentvalue: null
+2024-01-04 20:42:17,488 [INFO] Argument:325 - Argument : XferCpltCallbackvalue: null
+2024-01-04 20:42:17,489 [INFO] Argument:335 - Argument : XferCpltCallbackvalue: null
+2024-01-04 20:42:17,489 [INFO] Argument:325 - Argument : XferHalfCpltCallbackvalue: null
+2024-01-04 20:42:17,489 [INFO] Argument:335 - Argument : XferHalfCpltCallbackvalue: null
+2024-01-04 20:42:17,489 [INFO] Argument:325 - Argument : XferM1CpltCallbackvalue: null
+2024-01-04 20:42:17,489 [INFO] Argument:335 - Argument : XferM1CpltCallbackvalue: null
+2024-01-04 20:42:17,489 [INFO] Argument:325 - Argument : XferErrorCallbackvalue: null
+2024-01-04 20:42:17,489 [INFO] Argument:335 - Argument : XferErrorCallbackvalue: null
+2024-01-04 20:42:17,489 [INFO] Argument:325 - Argument : ErrorCodevalue: null
+2024-01-04 20:42:17,489 [INFO] Argument:335 - Argument : ErrorCodevalue: null
+2024-01-04 20:42:17,490 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 20:42:17,490 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 20:42:17,633 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\license.tmp_save
+2024-01-04 20:42:17,719 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\license.tmp
+2024-01-04 20:42:17,755 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\gpio.tmp_save
+2024-01-04 20:42:17,851 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\gpio.tmp
+2024-01-04 20:42:18,498 [WARN] IPConfigManager:99 - WARNING: Missing Config File for USB ip!!
+2024-01-04 20:42:18,520 [WARN] IPConfigManager:2946 - Warning: the RefConfig PWREx_EnableUSBVoltageDetector is not available in your config.xml file
+2024-01-04 20:42:18,532 [INFO] Middleware:1439 - No code input for Bsp Dependency
+2024-01-04 20:42:18,539 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_HalInit.tmp_save
+2024-01-04 20:42:18,633 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_HalInit.tmp
+2024-01-04 20:42:18,637 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_vars.tmp_save
+2024-01-04 20:42:18,705 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_vars.tmp
+2024-01-04 20:42:18,712 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_ext_vars.tmp_save
+2024-01-04 20:42:18,782 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_ext_vars.tmp
+2024-01-04 20:42:18,786 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_inc.tmp_save
+2024-01-04 20:42:18,852 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_inc.tmp
+2024-01-04 20:42:18,887 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\dma.tmp_save
+2024-01-04 20:42:18,968 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\dma.tmp
+2024-01-04 20:42:18,972 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\dma_GV.tmp_save
+2024-01-04 20:42:19,021 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\dma_GV.tmp
+2024-01-04 20:42:19,026 [INFO] Middleware:1439 - No code input for Bsp Dependency
+2024-01-04 20:42:19,033 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_HalInit.tmp_save
+2024-01-04 20:42:19,102 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_HalInit.tmp
+2024-01-04 20:42:19,108 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_vars.tmp_save
+2024-01-04 20:42:19,157 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_vars.tmp
+2024-01-04 20:42:19,163 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_ext_vars.tmp_save
+2024-01-04 20:42:19,211 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_ext_vars.tmp
+2024-01-04 20:42:19,215 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_inc.tmp_save
+2024-01-04 20:42:19,261 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\fatfs_inc.tmp
+2024-01-04 20:42:19,277 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\Target\ffconf.h_save
+2024-01-04 20:42:19,361 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\Target\ffconf.h
+2024-01-04 20:42:19,372 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\Target\user_diskio.c_save
+2024-01-04 20:42:19,497 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\Target\user_diskio.c
+2024-01-04 20:42:19,518 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\Target\user_diskio.h_save
+2024-01-04 20:42:19,591 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\Target\user_diskio.h
+2024-01-04 20:42:19,602 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\App\fatfs.c_save
+2024-01-04 20:42:19,669 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\App\fatfs.c
+2024-01-04 20:42:19,680 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\App\fatfs.h_save
+2024-01-04 20:42:19,746 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\FATFS\App\fatfs.h
+2024-01-04 20:42:19,771 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Src\stm32f4xx_it.c_save
+2024-01-04 20:42:19,957 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Src\stm32f4xx_it.c
+2024-01-04 20:42:19,968 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Inc\stm32f4xx_it.h_save
+2024-01-04 20:42:20,045 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Inc\stm32f4xx_it.h
+2024-01-04 20:42:20,070 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Src\stm32f4xx_hal_msp.c_save
+2024-01-04 20:42:20,237 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Src\stm32f4xx_hal_msp.c
+2024-01-04 20:42:20,247 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\system.tmp_save
+2024-01-04 20:42:20,304 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\MXTmpFiles\system.tmp
+2024-01-04 20:42:20,320 [INFO] CodeEngine:311 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Inc\stm32f4xx_hal_conf.h_save
+2024-01-04 20:42:20,405 [INFO] CodeEngine:335 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Inc\stm32f4xx_hal_conf.h
+2024-01-04 20:42:20,437 [WARN] IPConfigManager:2946 - Warning: the RefConfig PLL2P_FOR_MCO is not available in your config.xml file
+2024-01-04 20:42:20,444 [WARN] IPConfigManager:3440 - IP not found : TIM
+2024-01-04 20:42:20,444 [WARN] IPConfigManager:3440 - IP not found : USB_OTG
+2024-01-04 20:42:20,444 [WARN] CodeGenerator:3939 - IP not found : null
+2024-01-04 20:42:20,444 [WARN] CodeGenerator:3939 - IP not found : null
+2024-01-04 20:42:20,461 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Inc\main.h_save
+2024-01-04 20:42:20,557 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Inc\main.h
+2024-01-04 20:42:20,570 [INFO] CodeEngine:255 - oldGeneratedFile, C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Src\main.c_save
+2024-01-04 20:42:20,694 [INFO] CodeEngine:279 - Generated code: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\Core\Src\main.c
+2024-01-04 20:42:21,296 [INFO] ProjectBuilder:3076 - Time for Copy HAL[1] : 297mS.
+2024-01-04 20:42:21,302 [INFO] ProjectBuilder:4485 - Project Generator version: 4.2.0-B44
+2024-01-04 20:42:21,670 [INFO] ConfigFileManager:1495 - The Die is : DIE421
+2024-01-04 20:42:23,415 [INFO] ProjectBuilder:4747 - Time for Generating toolchain IDE Files: 2113mS.
+2024-01-04 20:42:23,416 [INFO] ProjectBuilder:2947 - Time for Copy CMSIS : 1mS.
+2024-01-04 20:42:23,426 [INFO] ProjectBuilder:2947 - Time for Copy CMSIS : 0mS.
+2024-01-04 22:15:36,082 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 22:15:36,082 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 22:15:36,083 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 22:15:36,083 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 22:15:36,085 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 22:15:36,085 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2024-01-04 22:15:36,086 [WARN] IP:2119 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2024-01-04 22:15:36,086 [WARN] IP:2119 - Analog_Filter not found: check if there is a RefParameter without a condition.

@@ -18,11 +18,17 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "cmsis_os.h"
+#include "fatfs.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "fatfs_sd.h"
+#include "string.h"
 #include "stdio.h"
 #include "MPU6050.h"
+#include "joystick.h"
+#include "Bar30.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -32,7 +38,14 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+SPI_HandleTypeDef hspi2;
+FATFS fs;
+FATFS *pfs;
+FIL fil;
+FRESULT fres;
+DWORD fre_clust;
+uint32_t totalSpace, freeSpace;
+char buffer[100];
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -42,25 +55,33 @@
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
+DMA_HandleTypeDef hdma_adc1;
 
 I2C_HandleTypeDef hi2c1;
 I2C_HandleTypeDef hi2c2;
 DMA_HandleTypeDef hdma_i2c1_rx;
 DMA_HandleTypeDef hdma_i2c1_tx;
 
-QSPI_HandleTypeDef hqspi;
+SPI_HandleTypeDef hspi2;
 
-SPI_HandleTypeDef hspi1;
-
+TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart2;
+UART_HandleTypeDef huart3;
+DMA_HandleTypeDef hdma_usart3_rx;
+DMA_HandleTypeDef hdma_usart3_tx;
 
-HCD_HandleTypeDef hhcd_USB_OTG_FS;
-
+osThreadId DefaultTaskHandle;
+osThreadId LEDscreenTaskHandle;
+osThreadId controlLoopTaskHandle;
+osThreadId SDcardTaskHandle;
 /* USER CODE BEGIN PV */
 
+Joystick joystick;
 MPU6050 mpu6050;
+Bar30 pressureSensor;
+
 uint8_t readCount=0;
 uint8_t message=0;
 uint8_t mpuIntCount=0;
@@ -72,6 +93,11 @@ float* accelz=&mpu6050.acc_mps2[2];
 float rollSpeed;
 float pitchSpeed;
 float yawSpeed;
+uint8_t uartRxBuffer[8];
+uint8_t uartTxBuffer[8];
+uint8_t uartReceiveFlag=0;
+
+
 
 /* USER CODE END PV */
 
@@ -79,14 +105,20 @@ float yawSpeed;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
-static void MX_USART2_UART_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_I2C1_Init(void);
-static void MX_QUADSPI_Init(void);
-static void MX_SPI1_Init(void);
 static void MX_TIM3_Init(void);
-static void MX_USB_OTG_FS_HCD_Init(void);
 static void MX_I2C2_Init(void);
+static void MX_SPI2_Init(void);
+static void MX_TIM2_Init(void);
+static void MX_USART2_UART_Init(void);
+static void MX_USB_OTG_FS_USB_Init(void);
+static void MX_USART3_UART_Init(void);
+void defaultTask(void const * argument);
+void sendDataToScreen(void const * argument);
+void updateControlLoop(void const * argument);
+void recordSDdata(void const * argument);
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -106,9 +138,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	if(GPIO_Pin==INT_MPU6050_Pin) //interrupt called at 1kHz
 	{
 		mpuIntCount=mpuIntCount+1;
-		if(mpuIntCount==10){ // read MPU6050 data at 100 Hz
+		if(mpuIntCount==20){ // read MPU6050 data at 50 Hz
 			message=MPU6050readDataDMA(&mpu6050);
-			printf("error message: %i\r\n:",message);
+			//printf("error message: %i\r\n:",message);
 			mpuIntCount=0;
 		}
 	}
@@ -120,14 +152,47 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef* hi2c)
 	{
 		mpu6050.rxFlag=0;
 		MPU6050convertRawData(&mpu6050);
-
-		printf("ax %.2f\r\n",*accelx);
-		printf("ay %.2f\r\n",*accely);
-	    printf("az %.2f\r\n",*accelz);
-	}
+//
+//		printf("ax %.2f\r\n",*accelx);
+//		printf("ay %.2f\r\n",*accely);
+//	    printf("az %.2f\r\n",*accelz);
+//		printf("MPU6050 data read success");
+//
+//	}
 
 }
 
+void transmit_uart(char* string){
+	uint8_t len=strlen(string);
+	HAL_UART_Transmit(&huart2,(uint8_t*)string,len,200);
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+//	if(hadc->Instance==ADC1){
+//		printf("Joystick x %.2f\r\n",joystick.joystickVoltage[0]);
+//		printf("Joystick y %.2f\r\n",joystick.joystickVoltage[1]);
+//	}
+
+}
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	uartReceiveFlag=1;
+
+}
+
+//void sendDataToScreen()
+//{
+////	uartTxBuffer[0]=0xDE;
+////	uartTxBuffer[1]=0xAD;
+////	uartTxBuffer[2]=0xFF;
+////	uartTxBuffer[3]=0x69;
+////	uartTxBuffer[4]=0xBB;
+////
+////	HAL_UART_Transmit_DMA(&huart1,(uint8_t*) uartTxBuffer,5);
+//
+//}
 
 
 
@@ -162,34 +227,110 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_USART2_UART_Init();
   MX_ADC1_Init();
   MX_I2C1_Init();
-  MX_QUADSPI_Init();
-  MX_SPI1_Init();
   MX_TIM3_Init();
-  MX_USB_OTG_FS_HCD_Init();
   MX_I2C2_Init();
+  MX_SPI2_Init();
+  MX_FATFS_Init();
+  MX_TIM2_Init();
+  MX_USART2_UART_Init();
+  MX_USB_OTG_FS_USB_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+
+  // Start DMA streams
+  HAL_ADC_Start_DMA(&hadc1,joystick.joystickData,2);
+  HAL_TIM_Base_Start(&htim2);
+  HAL_UART_Receive_DMA(&huart3,uartRxBuffer,8);
+
+  // sensor initialization
   uint8_t deviceReady;
   deviceReady=checkMPU6050Ready();
   uint8_t configGood=MPU6050init(&mpu6050,&hi2c1 );
   uint8_t rec;
   HAL_StatusTypeDef stat;
   stat=HAL_I2C_Mem_Read (&hi2c1,MPU6050ADDR,WHO_AM_I_REG,I2C_MEMADD_SIZE_8BIT,&rec,1,100);
-
-  //printf("MPU6050 recognized %i\r\n:",good);
+  Bar30init(&pressureSensor, &hi2c2);
+  uint8_t i2cGood=0;
+  i2cGood=Bar30reset(&pressureSensor);
+  printf("Reset Command Result : %i\r\n",i2cGood );
+  i2cGood=Bar30getCalibration(&pressureSensor);
+  printf("Calibration phase result : %i\r\n",i2cGood );
+  i2cGood=Bar30CRCcheck(pressureSensor.calibrationResult);
 
   /* USER CODE END 2 */
 
+  /* USER CODE BEGIN RTOS_MUTEX */
+  /* add mutexes, ... */
+  /* USER CODE END RTOS_MUTEX */
+
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* add semaphores, ... */
+  /* USER CODE END RTOS_SEMAPHORES */
+
+  /* USER CODE BEGIN RTOS_TIMERS */
+  /* start timers, add new ones, ... */
+  /* USER CODE END RTOS_TIMERS */
+
+  /* USER CODE BEGIN RTOS_QUEUES */
+  /* add queues, ... */
+  /* USER CODE END RTOS_QUEUES */
+
+  /* Create the thread(s) */
+  /* definition and creation of DefaultTask */
+  osThreadDef(DefaultTask, defaultTask, osPriorityLow, 0, 128);
+  DefaultTaskHandle = osThreadCreate(osThread(DefaultTask), NULL);
+
+  /* definition and creation of LEDscreenTask */
+  osThreadDef(LEDscreenTask, sendDataToScreen, osPriorityBelowNormal, 0, 1024);
+  LEDscreenTaskHandle = osThreadCreate(osThread(LEDscreenTask), NULL);
+
+  /* definition and creation of controlLoopTask */
+  osThreadDef(controlLoopTask, updateControlLoop, osPriorityAboveNormal, 0, 256);
+  controlLoopTaskHandle = osThreadCreate(osThread(controlLoopTask), NULL);
+
+  /* definition and creation of SDcardTask */
+  osThreadDef(SDcardTask, recordSDdata, osPriorityNormal, 0, 2048);
+  SDcardTaskHandle = osThreadCreate(osThread(SDcardTask), NULL);
+
+  /* USER CODE BEGIN RTOS_THREADS */
+  /* add threads, ... */
+  /* USER CODE END RTOS_THREADS */
+
+  /* Start scheduler */
+  osKernelStart();
+
+  /* We should never get here as control is now taken by the scheduler */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+//  HAL_UART_Receive_DMA(&huart1,uartRxBuffer,5);
+//  uartTxBuffer[0]=0xDE;
+//  uartTxBuffer[1]=0xAD;
+//  uartTxBuffer[2]=0xFF;
+//  uartTxBuffer[3]=0x69;
+//  uartTxBuffer[4]=0xBB;
+//  HAL_UART_Transmit_DMA(&huart1,uartTxBuffer,5);
+
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  //printf("MPU6050 address: %i\r\n:",rec);
+	  //readJoystick(&joystick);
+
+	  //sendDataToScreen();
+	  //uartReceiveFlag=0;
+//	  i2cGood=Bar30getData(&pressureSensor);
+//
+//	  HAL_Delay(10);
+//	  printf("Data Conversion Result : %i\r\n",i2cGood );
+//	  printf("Ambient presure in mbar is: %.2f\r\n",(float)(pressureSensor.actualPressure)/100.0f);
+
+
+
   }
   /* USER CODE END 3 */
 }
@@ -206,7 +347,7 @@ void SystemClock_Config(void)
   /** Configure the main internal regulator output voltage
   */
   __HAL_RCC_PWR_CLK_ENABLE();
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
@@ -216,9 +357,9 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 4;
-  RCC_OscInitStruct.PLL.PLLN = 72;
+  RCC_OscInitStruct.PLL.PLLN = 168;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 3;
+  RCC_OscInitStruct.PLL.PLLQ = 7;
   RCC_OscInitStruct.PLL.PLLR = 2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
@@ -231,10 +372,10 @@ void SystemClock_Config(void)
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
   {
     Error_Handler();
   }
@@ -261,15 +402,15 @@ static void MX_ADC1_Init(void)
   /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
   */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
+  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
   hadc1.Init.Resolution = ADC_RESOLUTION_12B;
-  hadc1.Init.ScanConvMode = DISABLE;
+  hadc1.Init.ScanConvMode = ENABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
-  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
+  hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T2_TRGO;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 1;
+  hadc1.Init.NbrOfConversion = 2;
   hadc1.Init.DMAContinuousRequests = DISABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
@@ -281,7 +422,16 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_0;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+  sConfig.SamplingTime = ADC_SAMPLETIME_144CYCLES;
+  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
+  */
+  sConfig.Channel = ADC_CHANNEL_1;
+  sConfig.Rank = 2;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
@@ -361,75 +511,85 @@ static void MX_I2C2_Init(void)
 }
 
 /**
-  * @brief QUADSPI Initialization Function
+  * @brief SPI2 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_QUADSPI_Init(void)
+static void MX_SPI2_Init(void)
 {
 
-  /* USER CODE BEGIN QUADSPI_Init 0 */
+  /* USER CODE BEGIN SPI2_Init 0 */
 
-  /* USER CODE END QUADSPI_Init 0 */
+  /* USER CODE END SPI2_Init 0 */
 
-  /* USER CODE BEGIN QUADSPI_Init 1 */
+  /* USER CODE BEGIN SPI2_Init 1 */
 
-  /* USER CODE END QUADSPI_Init 1 */
-  /* QUADSPI parameter configuration*/
-  hqspi.Instance = QUADSPI;
-  hqspi.Init.ClockPrescaler = 255;
-  hqspi.Init.FifoThreshold = 1;
-  hqspi.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_NONE;
-  hqspi.Init.FlashSize = 1;
-  hqspi.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_1_CYCLE;
-  hqspi.Init.ClockMode = QSPI_CLOCK_MODE_0;
-  hqspi.Init.FlashID = QSPI_FLASH_ID_1;
-  hqspi.Init.DualFlash = QSPI_DUALFLASH_DISABLE;
-  if (HAL_QSPI_Init(&hqspi) != HAL_OK)
+  /* USER CODE END SPI2_Init 1 */
+  /* SPI2 parameter configuration*/
+  hspi2.Instance = SPI2;
+  hspi2.Init.Mode = SPI_MODE_MASTER;
+  hspi2.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi2.Init.NSS = SPI_NSS_SOFT;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi2.Init.CRCPolynomial = 10;
+  if (HAL_SPI_Init(&hspi2) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN QUADSPI_Init 2 */
+  /* USER CODE BEGIN SPI2_Init 2 */
 
-  /* USER CODE END QUADSPI_Init 2 */
+  /* USER CODE END SPI2_Init 2 */
 
 }
 
 /**
-  * @brief SPI1 Initialization Function
+  * @brief TIM2 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_SPI1_Init(void)
+static void MX_TIM2_Init(void)
 {
 
-  /* USER CODE BEGIN SPI1_Init 0 */
+  /* USER CODE BEGIN TIM2_Init 0 */
 
-  /* USER CODE END SPI1_Init 0 */
+  /* USER CODE END TIM2_Init 0 */
 
-  /* USER CODE BEGIN SPI1_Init 1 */
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-  /* USER CODE END SPI1_Init 1 */
-  /* SPI1 parameter configuration*/
-  hspi1.Instance = SPI1;
-  hspi1.Init.Mode = SPI_MODE_MASTER;
-  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
-  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi1.Init.CRCPolynomial = 10;
-  if (HAL_SPI_Init(&hspi1) != HAL_OK)
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 8400-1;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 1000-1;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN SPI1_Init 2 */
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
 
-  /* USER CODE END SPI1_Init 2 */
+  /* USER CODE END TIM2_Init 2 */
 
 }
 
@@ -510,7 +670,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 1200;
+  huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
@@ -528,11 +688,44 @@ static void MX_USART2_UART_Init(void)
 }
 
 /**
+  * @brief USART3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART3_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART3_Init 0 */
+
+  /* USER CODE END USART3_Init 0 */
+
+  /* USER CODE BEGIN USART3_Init 1 */
+
+  /* USER CODE END USART3_Init 1 */
+  huart3.Instance = USART3;
+  huart3.Init.BaudRate = 115200;
+  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.StopBits = UART_STOPBITS_1;
+  huart3.Init.Parity = UART_PARITY_NONE;
+  huart3.Init.Mode = UART_MODE_TX_RX;
+  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART3_Init 2 */
+
+  /* USER CODE END USART3_Init 2 */
+
+}
+
+/**
   * @brief USB_OTG_FS Initialization Function
   * @param None
   * @retval None
   */
-static void MX_USB_OTG_FS_HCD_Init(void)
+static void MX_USB_OTG_FS_USB_Init(void)
 {
 
   /* USER CODE BEGIN USB_OTG_FS_Init 0 */
@@ -542,16 +735,6 @@ static void MX_USB_OTG_FS_HCD_Init(void)
   /* USER CODE BEGIN USB_OTG_FS_Init 1 */
 
   /* USER CODE END USB_OTG_FS_Init 1 */
-  hhcd_USB_OTG_FS.Instance = USB_OTG_FS;
-  hhcd_USB_OTG_FS.Init.Host_channels = 12;
-  hhcd_USB_OTG_FS.Init.speed = HCD_SPEED_FULL;
-  hhcd_USB_OTG_FS.Init.dma_enable = DISABLE;
-  hhcd_USB_OTG_FS.Init.phy_itface = HCD_PHY_EMBEDDED;
-  hhcd_USB_OTG_FS.Init.Sof_enable = DISABLE;
-  if (HAL_HCD_Init(&hhcd_USB_OTG_FS) != HAL_OK)
-  {
-    Error_Handler();
-  }
   /* USER CODE BEGIN USB_OTG_FS_Init 2 */
 
   /* USER CODE END USB_OTG_FS_Init 2 */
@@ -566,14 +749,24 @@ static void MX_DMA_Init(void)
 
   /* DMA controller clock enable */
   __HAL_RCC_DMA1_CLK_ENABLE();
+  __HAL_RCC_DMA2_CLK_ENABLE();
 
   /* DMA interrupt init */
   /* DMA1_Stream0_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
-  /* DMA1_Stream6_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
+  /* DMA1_Stream1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+  /* DMA1_Stream3_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
+  /* DMA1_Stream7_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream7_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream7_IRQn);
+  /* DMA2_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
 
 }
 
@@ -595,7 +788,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_8, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(SPI2_CS_GPIO_Port, SPI2_CS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -609,15 +808,43 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(INT_MPU6050_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LD2_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin;
+  /*Configure GPIO pins : PA5 PA6 PA8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_8;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB0 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : SPI2_CS_Pin */
+  GPIO_InitStruct.Pin = SPI2_CS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
+  HAL_GPIO_Init(SPI2_CS_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA9 */
+  GPIO_InitStruct.Pin = GPIO_PIN_9;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA10 PA11 PA12 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12;
+  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  GPIO_InitStruct.Alternate = GPIO_AF10_OTG_FS;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(EXTI1_IRQn);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
@@ -640,6 +867,190 @@ return ch;
 }
 
 /* USER CODE END 4 */
+
+/* USER CODE BEGIN Header_defaultTask */
+/**
+  * @brief  Function implementing the DefaultTask thread.
+  * @param  argument: Not used
+  * @retval None
+  */
+/* USER CODE END Header_defaultTask */
+void defaultTask(void const * argument)
+{
+  /* USER CODE BEGIN 5 */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(100);
+  }
+  /* USER CODE END 5 */
+}
+
+/* USER CODE BEGIN Header_sendDataToScreen */
+/**
+* @brief Function implementing the LEDscreenTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_sendDataToScreen */
+void sendDataToScreen(void const * argument)
+{
+  /* USER CODE BEGIN sendDataToScreen */
+  static uint8_t startByte=0xFF;
+  static uint8_t rxBuffer=0;
+
+  /* Infinite loop */
+  for(;;)
+  {
+	  HAL_UART_Transmit(&huart3,&startByte,1,10);
+	  while(uartRxBuffer[0]!=0xAA || )
+
+  }
+    osDelay(1000); // update screen data every 1 second
+  }
+  /* USER CODE END sendDataToScreen */
+}
+
+/* USER CODE BEGIN Header_updateControlLoop */
+/**
+* @brief Function implementing the controlLoopTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_updateControlLoop */
+void updateControlLoop(void const * argument)
+{
+  /* USER CODE BEGIN updateControlLoop */
+	static uint8_t i2cGood=0;
+  /* Infinite loop */
+  for(;;)
+  {
+
+	readJoystick(&joystick);
+	printf("Joystick x %.2f\r\n",joystick.joystickVoltage[0]);
+	printf("Joystick y %.2f\r\n",joystick.joystickVoltage[1]);
+	i2cGood=Bar30getData(&pressureSensor);
+	yawSpeed=mpu6050.gyr_rps[2];
+
+	// calculate PID
+	// write servo output
+
+    osDelay(100); // update control loop every 100 ms
+  }
+  /* USER CODE END updateControlLoop */
+}
+
+/* USER CODE BEGIN Header_recordSDdata */
+/**
+* @brief Function implementing the SDcardTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_recordSDdata */
+void recordSDdata(void const * argument)
+{
+  /* USER CODE BEGIN recordSDdata */
+  /* Infinite loop */
+  for(;;)
+  {
+
+	    // Waiting for the Micro SD module to initialize
+//	  printf("SD card thread is called!");
+//
+//	  	fres = f_mount(&fs, "", 0);
+//	  	if (fres == FR_OK) {
+//	  		transmit_uart("Micro SD card is mounted successfully!\n");
+//	  	} else if (fres != FR_OK) {
+//	  		transmit_uart("Micro SD card's mount error!\n");
+//	  	}
+//
+//	  	// FA_OPEN_APPEND opens file if it exists and if not then creates it,
+//	  	// the pointer is set at the end of the file for appending
+//	  	fres = f_open(&fil, "log-file.txt", FA_OPEN_APPEND | FA_WRITE | FA_READ);
+//	  	if (fres == FR_OK) {
+//	  		transmit_uart("File opened for reading and checking the free space.\n");
+//	  	} else if (fres != FR_OK) {
+//	  		transmit_uart("File was not opened for reading and checking the free space!\n");
+//	  	}
+//
+//	  	fres = f_getfree("", &fre_clust, &pfs);
+//	  	totalSpace = (uint32_t) ((pfs->n_fatent - 2) * pfs->csize * 0.5);
+//	  	freeSpace = (uint32_t) (fre_clust * pfs->csize * 0.5);
+//	  	char mSz[12];
+//	  	sprintf(mSz, "%lu", freeSpace);
+//	  	if (fres == FR_OK) {
+//	  		transmit_uart("The free space is: ");
+//	  		transmit_uart(mSz);
+//	  		transmit_uart("\n");
+//	  	} else if (fres != FR_OK) {
+//	  		transmit_uart("The free space could not be determined!\n");
+//	  	}
+//
+//	  	for (uint8_t i = 0; i < 10; i++) {
+//	  		f_puts("CHILLING BLING LING.\n", &fil);
+//	  	}
+//
+//	  	fres = f_close(&fil);
+//	  	if (fres == FR_OK) {
+//	  		transmit_uart("The file is closed.\n");
+//	  	} else if (fres != FR_OK) {
+//	  		transmit_uart("The file was not closed.\n");
+//	  	}
+//
+//	  	// Open file to read
+//	  	fres = f_open(&fil, "log-file.txt", FA_READ);
+//	  	if (fres == FR_OK) {
+//	  		transmit_uart("File opened for reading.\n");
+//	  	} else if (fres != FR_OK) {
+//	  		transmit_uart("File was not opened for reading!\n");
+//	  	}
+//
+//	  	while (f_gets(buffer, sizeof(buffer), &fil)) {
+//	  		char mRd[100];
+//	  		sprintf(mRd, "%s", buffer);
+//	  		//transmit_uart(mRd);
+//
+//	  	}
+//
+//	  	 //Close file
+//	  	fres = f_close(&fil);
+//	  	if (fres == FR_OK) {
+//	  		transmit_uart("The file is closed.\n");
+//	  	} else if (fres != FR_OK) {
+//	  		transmit_uart("The file was not closed.\n");
+//	  	}
+//
+//	  	f_mount(NULL, "", 1);
+//	  	if (fres == FR_OK) {
+//	  		transmit_uart("The Micro SD card is unmounted!\n");
+//	  	} else if (fres != FR_OK) {
+//	  		transmit_uart("The Micro SD was not unmounted!");
+//	  	}
+    osDelay(5000); // write SD card data every 5 seconds
+  }
+  /* USER CODE END recordSDdata */
+}
+
+/**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM1 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM1) {
+    HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.
