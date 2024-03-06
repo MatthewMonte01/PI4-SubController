@@ -29,6 +29,8 @@
 #include "MPU6050.h"
 #include "joystick.h"
 #include "Bar30.h"
+#include "LCDcommunication.h"
+#include "servos.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -38,6 +40,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+// SD card variables
 SPI_HandleTypeDef hspi2;
 FATFS fs;
 FATFS *pfs;
@@ -46,6 +50,8 @@ FRESULT fres;
 DWORD fre_clust;
 uint32_t totalSpace, freeSpace;
 char buffer[100];
+
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -76,6 +82,9 @@ osThreadId DefaultTaskHandle;
 osThreadId LEDscreenTaskHandle;
 osThreadId controlLoopTaskHandle;
 osThreadId SDcardTaskHandle;
+osThreadId pressureSensorTHandle;
+osMessageQId senderHandle;
+osMessageQId receiverHandle;
 /* USER CODE BEGIN PV */
 
 Joystick joystick;
@@ -93,9 +102,15 @@ float* accelz=&mpu6050.acc_mps2[2];
 float rollSpeed;
 float pitchSpeed;
 float yawSpeed;
+
+// screen buffers and states
 uint8_t uartRxBuffer[8];
 uint8_t uartTxBuffer[8];
-uint8_t uartReceiveFlag=0;
+uint8_t* txbufptr=&uartTxBuffer[0];
+uint8_t transferControlByte=0x00;
+static HAL_StatusTypeDef txStatus;
+
+State currentState=IDLE_STATE;
 
 
 
@@ -118,6 +133,7 @@ void defaultTask(void const * argument);
 void sendDataToScreen(void const * argument);
 void updateControlLoop(void const * argument);
 void recordSDdata(void const * argument);
+void getBar30Data(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -138,7 +154,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	if(GPIO_Pin==INT_MPU6050_Pin) //interrupt called at 1kHz
 	{
 		mpuIntCount=mpuIntCount+1;
-		if(mpuIntCount==20){ // read MPU6050 data at 50 Hz
+		if(mpuIntCount==20){ // downsample MPU6050 data at 50 Hz
 			message=MPU6050readDataDMA(&mpu6050);
 			//printf("error message: %i\r\n:",message);
 			mpuIntCount=0;
@@ -158,7 +174,7 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef* hi2c)
 //	    printf("az %.2f\r\n",*accelz);
 //		printf("MPU6050 data read success");
 //
-//	}
+	}
 
 }
 
@@ -178,21 +194,45 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	uartReceiveFlag=1;
+	if (huart->Instance==USART3)
+	{
+		if(currentState==IDLE_STATE)
+		{
+			if(transferControlByte==0xFF)
+				currentState=SEND_ACK_STATE;
+		}
+
+		else if(currentState==SENDING_DATA_STATE)
+		{
+			currentState==IDLE_STATE;
+		}
+		else
+			return;
+	}
+	transferControlByte=0x00;
+
+
+
 
 }
 
-//void sendDataToScreen()
-//{
-////	uartTxBuffer[0]=0xDE;
-////	uartTxBuffer[1]=0xAD;
-////	uartTxBuffer[2]=0xFF;
-////	uartTxBuffer[3]=0x69;
-////	uartTxBuffer[4]=0xBB;
-////
-////	HAL_UART_Transmit_DMA(&huart1,(uint8_t*) uartTxBuffer,5);
-//
-//}
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart)
+{
+
+
+}
+
+int _write(int file, char *ptr, int len)
+{
+  (void)file;
+  int DataIdx;
+
+  for (DataIdx = 0; DataIdx < len; DataIdx++)
+  {
+    ITM_SendChar(*ptr++);
+  }
+  return len;
+}
 
 
 
@@ -239,10 +279,29 @@ int main(void)
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
 
+  // Start servo PWM ( pulse duration from 0.9ms to 2.1ms with 1.5 as center ) duty cycle varies from 4.5% to 7.5%
+  //( CCR can go from 450 to 750 )
+  HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_2);
+  HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_3);
+  HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_4);
+
+  htim3.Instance->CCR1=600;
+  htim3.Instance->CCR2=600;
+  htim3.Instance->CCR3=600;
+  htim3.Instance->CCR4=600;
+
+
   // Start DMA streams
   HAL_ADC_Start_DMA(&hadc1,joystick.joystickData,2);
   HAL_TIM_Base_Start(&htim2);
   HAL_UART_Receive_DMA(&huart3,uartRxBuffer,8);
+
+  // Put servos in initial positioning (centered)
+  htim3.Instance->CCR1=450;
+  htim3.Instance->CCR2=450;
+  htim3.Instance->CCR3=450;
+  htim3.Instance->CCR4=450;
 
   // sensor initialization
   uint8_t deviceReady;
@@ -259,6 +318,8 @@ int main(void)
   printf("Calibration phase result : %i\r\n",i2cGood );
   i2cGood=Bar30CRCcheck(pressureSensor.calibrationResult);
 
+  HAL_UART_Receive_DMA(&huart3,&transferControlByte,1);
+
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -273,26 +334,39 @@ int main(void)
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
 
+  /* Create the queue(s) */
+  /* definition and creation of sender */
+  osMessageQDef(sender, 32, uint16_t);
+  senderHandle = osMessageCreate(osMessageQ(sender), NULL);
+
+  /* definition and creation of receiver */
+  osMessageQDef(receiver, 16, uint16_t);
+  receiverHandle = osMessageCreate(osMessageQ(receiver), NULL);
+
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
   /* definition and creation of DefaultTask */
-  osThreadDef(DefaultTask, defaultTask, osPriorityLow, 0, 128);
+  osThreadDef(DefaultTask, defaultTask, osPriorityIdle, 0, 128);
   DefaultTaskHandle = osThreadCreate(osThread(DefaultTask), NULL);
 
   /* definition and creation of LEDscreenTask */
-  osThreadDef(LEDscreenTask, sendDataToScreen, osPriorityBelowNormal, 0, 1024);
+  osThreadDef(LEDscreenTask, sendDataToScreen, osPriorityNormal, 0, 1024);
   LEDscreenTaskHandle = osThreadCreate(osThread(LEDscreenTask), NULL);
 
   /* definition and creation of controlLoopTask */
-  osThreadDef(controlLoopTask, updateControlLoop, osPriorityAboveNormal, 0, 256);
+  osThreadDef(controlLoopTask, updateControlLoop, osPriorityHigh, 0, 256);
   controlLoopTaskHandle = osThreadCreate(osThread(controlLoopTask), NULL);
 
   /* definition and creation of SDcardTask */
-  osThreadDef(SDcardTask, recordSDdata, osPriorityNormal, 0, 2048);
+  osThreadDef(SDcardTask, recordSDdata, osPriorityAboveNormal, 0, 2048);
   SDcardTaskHandle = osThreadCreate(osThread(SDcardTask), NULL);
+
+  /* definition and creation of pressureSensorT */
+  osThreadDef(pressureSensorT, getBar30Data, osPriorityNormal, 0, 128);
+  pressureSensorTHandle = osThreadCreate(osThread(pressureSensorT), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -305,13 +379,6 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-//  HAL_UART_Receive_DMA(&huart1,uartRxBuffer,5);
-//  uartTxBuffer[0]=0xDE;
-//  uartTxBuffer[1]=0xAD;
-//  uartTxBuffer[2]=0xFF;
-//  uartTxBuffer[3]=0x69;
-//  uartTxBuffer[4]=0xBB;
-//  HAL_UART_Transmit_DMA(&huart1,uartTxBuffer,5);
 
 
   while (1)
@@ -356,7 +423,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 4;
+  RCC_OscInitStruct.PLL.PLLM = 8;
   RCC_OscInitStruct.PLL.PLLN = 168;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = 7;
@@ -612,9 +679,9 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 0;
+  htim3.Init.Prescaler = 168;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 65535;
+  htim3.Init.Period = 10000-1;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_PWM_Init(&htim3) != HAL_OK)
@@ -788,7 +855,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_8, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_8|GPIO_PIN_15, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0, GPIO_PIN_RESET);
@@ -808,8 +875,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(INT_MPU6050_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PA5 PA6 PA8 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_8;
+  /*Configure GPIO pins : PA5 PA6 PA8 PA15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_8|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -881,7 +948,7 @@ void defaultTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(100);
+    osDelay(1);
   }
   /* USER CODE END 5 */
 }
@@ -896,18 +963,43 @@ void defaultTask(void const * argument)
 void sendDataToScreen(void const * argument)
 {
   /* USER CODE BEGIN sendDataToScreen */
-  static uint8_t startByte=0xFF;
-  static uint8_t rxBuffer=0;
+
+
+
 
   /* Infinite loop */
   for(;;)
   {
-	  HAL_UART_Transmit(&huart3,&startByte,1,10);
-	  while(uartRxBuffer[0]!=0xAA || )
+	  switch(currentState){
+		  case IDLE_STATE:
+			  // request byte is received in background via cicular DMA
+			  break;
 
+		  case SEND_ACK_STATE:
+			  uint8_t ackByte=0x10;
+			  HAL_UART_Transmit(&huart3,&ackByte,1,100);
+			  break;
+
+
+		  case SENDING_DATA_STATE:
+			  uartTxBuffer[0]=0xAA;
+			  uartTxBuffer[1]=0xBB;
+			  uartTxBuffer[2]=0xCC;
+			  uartTxBuffer[3]=0xDD;
+			  uartTxBuffer[4]=0xEE;
+			  uartTxBuffer[5]=0xFF;
+			  uartTxBuffer[6]=0x00;
+			  uartTxBuffer[7]=0x01;
+			  txStatus=HAL_UART_Transmit(&huart3,txbufptr,8,10);
+			  break;
+
+	  }
+
+
+	  osDelay(50000); //
   }
-    osDelay(1000); // update screen data every 1 second
-  }
+
+
   /* USER CODE END sendDataToScreen */
 }
 
@@ -921,21 +1013,109 @@ void sendDataToScreen(void const * argument)
 void updateControlLoop(void const * argument)
 {
   /* USER CODE BEGIN updateControlLoop */
-	static uint8_t i2cGood=0;
+
+//	static uint16_t motorCCR=450;
+//	static uint16_t goUp=1;
+//	static uint16_t goDown=0;
+	static uint8_t variation=5;
+
   /* Infinite loop */
   for(;;)
   {
 
 	readJoystick(&joystick);
-	printf("Joystick x %.2f\r\n",joystick.joystickVoltage[0]);
-	printf("Joystick y %.2f\r\n",joystick.joystickVoltage[1]);
-	i2cGood=Bar30getData(&pressureSensor);
-	yawSpeed=mpu6050.gyr_rps[2];
+	//printf("Joystick x %.2f\r\n",joystick.joystickVoltage[0]);
+	//printf("Joystick y %.2f\r\n",joystick.joystickVoltage[1]);
 
-	// calculate PID
-	// write servo output
+	if(joystick.joystickVoltage[0]<1.02f ) // go left
+	{
+		//go left
+		if(htim3.Instance->CCR1<=750-variation)
+			htim3.Instance->CCR1+=variation;
 
-    osDelay(100); // update control loop every 100 ms
+		if(htim3.Instance->CCR2>=450+variation)
+			htim3.Instance->CCR2-=variation;
+
+	    if(htim3.Instance->CCR3<=750-variation)
+	    	htim3.Instance->CCR3+=variation;
+
+	    if(htim3.Instance->CCR4>=450+variation)
+	    	htim3.Instance->CCR4-=variation;
+
+	}
+	else if(joystick.joystickVoltage[0]>1.83f)
+	{
+		//go Right
+		if(htim3.Instance->CCR1>=450+variation)
+			htim3.Instance->CCR1-=variation;
+
+		if(htim3.Instance->CCR2<=750-variation)
+			htim3.Instance->CCR2+=variation;
+
+		if(htim3.Instance->CCR3>=450+variation)
+			htim3.Instance->CCR3-=variation;
+
+		if(htim3.Instance->CCR4<=750-variation)
+			htim3.Instance->CCR4+=variation;
+	}
+
+	else if (joystick.joystickVoltage[1]<1.02f)
+	{
+		//go down
+		if(htim3.Instance->CCR1<=750-variation)
+			htim3.Instance->CCR1+=variation;
+		if(htim3.Instance->CCR2<=750-variation)
+			htim3.Instance->CCR2+=variation;
+		if(htim3.Instance->CCR3<=750-variation)
+			htim3.Instance->CCR3+=variation;
+		if(htim3.Instance->CCR4<=750-variation)
+			htim3.Instance->CCR4+=variation;
+	}
+	else if(joystick.joystickVoltage[1]>2.7f)
+	{
+		//go up
+		if(htim3.Instance->CCR1>=450+variation)
+			htim3.Instance->CCR1-=variation;
+		if(htim3.Instance->CCR2>=450+variation)
+			htim3.Instance->CCR2-=variation;
+		if(htim3.Instance->CCR3>=450+variation)
+			htim3.Instance->CCR3-=variation;
+		if(htim3.Instance->CCR4>=450+variation)
+			htim3.Instance->CCR4-=variation;
+	}
+
+
+
+
+
+	//yawSpeed=mpu6050.gyr_rps[2];
+
+//	// calculate PID
+//	// write servo output
+//	 htim3.Instance->CCR1=motorCCR;
+//	 if(goUp==1){
+//		 if(motorCCR!=750)
+//			 motorCCR+=10;
+//		 if (motorCCR==750)
+//		 {
+//			 goDown=1;
+//			 goUp=0;
+//
+//		 }
+//	 }
+//	 if (goDown==1){
+//		 if(motorCCR!=450)
+//			 motorCCR-=10;
+//		 if(motorCCR==450){
+//			 goDown=0;
+//			 goUp=1;
+//		 }
+//
+//	 }
+
+
+
+    osDelay(200); // update control loop every 100 ms
   }
   /* USER CODE END updateControlLoop */
 }
@@ -955,80 +1135,103 @@ void recordSDdata(void const * argument)
   {
 
 	    // Waiting for the Micro SD module to initialize
-//	  printf("SD card thread is called!");
-//
-//	  	fres = f_mount(&fs, "", 0);
-//	  	if (fres == FR_OK) {
-//	  		transmit_uart("Micro SD card is mounted successfully!\n");
-//	  	} else if (fres != FR_OK) {
-//	  		transmit_uart("Micro SD card's mount error!\n");
-//	  	}
-//
-//	  	// FA_OPEN_APPEND opens file if it exists and if not then creates it,
-//	  	// the pointer is set at the end of the file for appending
-//	  	fres = f_open(&fil, "log-file.txt", FA_OPEN_APPEND | FA_WRITE | FA_READ);
-//	  	if (fres == FR_OK) {
-//	  		transmit_uart("File opened for reading and checking the free space.\n");
-//	  	} else if (fres != FR_OK) {
-//	  		transmit_uart("File was not opened for reading and checking the free space!\n");
-//	  	}
-//
-//	  	fres = f_getfree("", &fre_clust, &pfs);
-//	  	totalSpace = (uint32_t) ((pfs->n_fatent - 2) * pfs->csize * 0.5);
-//	  	freeSpace = (uint32_t) (fre_clust * pfs->csize * 0.5);
-//	  	char mSz[12];
-//	  	sprintf(mSz, "%lu", freeSpace);
-//	  	if (fres == FR_OK) {
-//	  		transmit_uart("The free space is: ");
-//	  		transmit_uart(mSz);
-//	  		transmit_uart("\n");
-//	  	} else if (fres != FR_OK) {
-//	  		transmit_uart("The free space could not be determined!\n");
-//	  	}
-//
+	  	printf("SD card thread is called!");
+
+	  	fres = f_mount(&fs, "", 0);
+	  	if (fres == FR_OK) {
+	  		printf("Micro SD card is mounted successfully!\n");
+	  	} else if (fres != FR_OK) {
+	  		printf("Micro SD card's mount error!\n");
+	  	}
+
+	  	// FA_OPEN_APPEND opens file if it exists and if not then creates it,
+	  	// the pointer is set at the end of the file for appending
+	  	fres = f_open(&fil, "accel.txt", FA_OPEN_APPEND | FA_WRITE | FA_READ);
+	  	if (fres == FR_OK) {
+	  		printf("File opened for reading and checking the free space.\n");
+	  	} else if (fres != FR_OK) {
+	  		printf("File was not opened for reading and checking the free space!\n");
+	  	}
+
+	  	fres = f_getfree("", &fre_clust, &pfs);
+	  	totalSpace = (uint32_t) ((pfs->n_fatent - 2) * pfs->csize * 0.5);
+	  	freeSpace = (uint32_t) (fre_clust * pfs->csize * 0.5);
+	  	char mSz[12];
+	  	sprintf(mSz, "%lu", freeSpace);
+	  	if (fres == FR_OK) {
+	  		printf("The free space is: ");
+	  		printf(mSz);
+	  		printf("\n");
+	  	} else if (fres != FR_OK) {
+	  		printf("The free space could not be determined!\n");
+	  	}
+
 //	  	for (uint8_t i = 0; i < 10; i++) {
-//	  		f_puts("CHILLING BLING LING.\n", &fil);
+//	  		f_puts("NEW BOARD TEST.\n", &fil);
 //	  	}
-//
-//	  	fres = f_close(&fil);
-//	  	if (fres == FR_OK) {
-//	  		transmit_uart("The file is closed.\n");
-//	  	} else if (fres != FR_OK) {
-//	  		transmit_uart("The file was not closed.\n");
-//	  	}
-//
+	  	char accDataString[50];
+	  	sprintf(accDataString, "ax=%3f, ay=%3f, az=%3f\n", mpu6050.acc_mps2[0],  mpu6050.acc_mps2[1],  mpu6050.acc_mps2[2]);
+	  	f_puts(accDataString, &fil);
+
+	  	fres = f_close(&fil);
+	  	if (fres == FR_OK) {
+	  		printf("The file is closed.\n");
+	  	} else if (fres != FR_OK) {
+	  		printf("The file was not closed.\n");
+	  	}
+
 //	  	// Open file to read
-//	  	fres = f_open(&fil, "log-file.txt", FA_READ);
+//	  	fres = f_open(&fil, "hi.txt", FA_READ);
 //	  	if (fres == FR_OK) {
-//	  		transmit_uart("File opened for reading.\n");
+//	  		printf("File opened for reading.\n");
 //	  	} else if (fres != FR_OK) {
-//	  		transmit_uart("File was not opened for reading!\n");
+//	  		printf("File was not opened for reading!\n");
 //	  	}
 //
 //	  	while (f_gets(buffer, sizeof(buffer), &fil)) {
 //	  		char mRd[100];
 //	  		sprintf(mRd, "%s", buffer);
-//	  		//transmit_uart(mRd);
+//	  		printf(mRd);
 //
 //	  	}
-//
+
 //	  	 //Close file
 //	  	fres = f_close(&fil);
 //	  	if (fres == FR_OK) {
-//	  		transmit_uart("The file is closed.\n");
+//	  		printf("The file is closed.\n");
 //	  	} else if (fres != FR_OK) {
-//	  		transmit_uart("The file was not closed.\n");
+//	  		printf("The file was not closed.\n");
 //	  	}
-//
-//	  	f_mount(NULL, "", 1);
-//	  	if (fres == FR_OK) {
-//	  		transmit_uart("The Micro SD card is unmounted!\n");
-//	  	} else if (fres != FR_OK) {
-//	  		transmit_uart("The Micro SD was not unmounted!");
-//	  	}
+
+	  	f_mount(NULL, "", 1);
+	  	if (fres == FR_OK) {
+	  		printf("The Micro SD card is unmounted!\n");
+	  	} else if (fres != FR_OK) {
+	  		printf("The Micro SD was not unmounted!");
+	  	}
     osDelay(5000); // write SD card data every 5 seconds
   }
   /* USER CODE END recordSDdata */
+}
+
+/* USER CODE BEGIN Header_getBar30Data */
+/**
+* @brief Function implementing the pressureSensorT thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_getBar30Data */
+void getBar30Data(void const * argument)
+{
+  /* USER CODE BEGIN getBar30Data */
+  /* Infinite loop */
+	static uint8_t i2cGood=1;
+  for(;;)
+  {
+	 i2cGood=Bar30getData(&pressureSensor);
+    osDelay(250);
+  }
+  /* USER CODE END getBar30Data */
 }
 
 /**

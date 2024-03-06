@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="MPU6050"/>
+		<item key="selection" value="fil"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="fil"/>
+			<item value="&amp;fil"/>
+			<item value="SELECT"/>
+			<item value="Timer1"/>
+			<item value="type"/>
+			<item value="CardType"/>
+			<item value="printf"/>
+			<item value="chilling"/>
+			<item value="transferControlByte"/>
+			<item value="ack"/>
+			<item value="rxBuffer"/>
+			<item value="uartTxBuffer"/>
 			<item value="MPU6050"/>
 			<item value="transmit"/>
 			<item value="long"/>
-			<item value="calculateTemperature"/>
-			<item value="calculatePressure"/>
-			<item value="status"/>
-			<item value="MPU6050readDataDMA"/>
-			<item value="MPU6050convertRawData"/>
-			<item value="HAL_I2C_Master_Transmit"/>
-			<item value="HAL_I2C_Transmit"/>
-			<item value="HAL_I2C_transmit"/>
-			<item value="HAL_PWREx_EnableUSBVoltageDetector();"/>
-			<item value="USBH_Start()"/>
-			<item value="USBH"/>
-			<item value="uartTxBuffer"/>
 		</list>
 		<list key="replacehistory">
 			<item value=" "/>
