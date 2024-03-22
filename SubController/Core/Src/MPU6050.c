@@ -83,4 +83,27 @@ void MPU6050convertRawData(MPU6050* imu)
 
 }
 
+void MPU6050filterRawData(MPU6050* imu)
+{
+
+	static float accPrev[3] = {0.0f}; // Static array to store previous accelerometer values
+	static float gyrPrev[3] = {0.0f}; // Static array to store previous gyroscope values
+
+	imu->acc_mps2[0]=LPF_ACC_ALPHA*accPrev[0]+(1.0f-LPF_ACC_ALPHA)*imu->acc_mps2[0];
+	imu->acc_mps2[1]=LPF_ACC_ALPHA*accPrev[1]+(1.0f-LPF_ACC_ALPHA)*imu->acc_mps2[1];
+	imu->acc_mps2[2]=LPF_ACC_ALPHA*accPrev[2]+(1.0f-LPF_ACC_ALPHA)*imu->acc_mps2[2];
+
+	imu->gyr_rps[0]=LPF_GYR_ALPHA*accPrev[0]+(1.0f-LPF_GYR_ALPHA)*imu->gyr_rps[0];
+	imu->gyr_rps[1]=LPF_GYR_ALPHA*accPrev[1]+(1.0f-LPF_GYR_ALPHA)*imu->gyr_rps[1];
+	imu->gyr_rps[2]=LPF_GYR_ALPHA*accPrev[2]+(1.0f-LPF_GYR_ALPHA)*imu->gyr_rps[2];
+
+	accPrev[0] = imu->acc_mps2[0];
+	accPrev[1] = imu->acc_mps2[1];
+	accPrev[2] = imu->acc_mps2[2];
+
+	gyrPrev[0] = imu->gyr_rps[0];
+	gyrPrev[1] = imu->gyr_rps[1];
+	gyrPrev[2] = imu->gyr_rps[2];
+
+}
 

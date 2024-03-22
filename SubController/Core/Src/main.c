@@ -30,6 +30,7 @@
 #include "joystick.h"
 #include "Bar30.h"
 #include "LCDcommunication.h"
+#include "KalmanRollPitch.h"
 #include "servos.h"
 /* USER CODE END Includes */
 
@@ -83,11 +84,15 @@ osThreadId LEDscreenTaskHandle;
 osThreadId controlLoopTaskHandle;
 osThreadId SDcardTaskHandle;
 osThreadId pressureSensorTHandle;
+osThreadId KalmanPredictHandle;
+osThreadId KalmanUpdateHandle;
 osMessageQId senderHandle;
 osMessageQId receiverHandle;
 /* USER CODE BEGIN PV */
 
 Joystick joystick;
+
+EKF ekf;
 MPU6050 mpu6050;
 Bar30 pressureSensor;
 
@@ -102,6 +107,8 @@ float* accelz=&mpu6050.acc_mps2[2];
 float rollSpeed;
 float pitchSpeed;
 float yawSpeed;
+
+
 
 // screen buffers and states
 uint8_t uartRxBuffer[8];
@@ -134,6 +141,8 @@ void sendDataToScreen(void const * argument);
 void updateControlLoop(void const * argument);
 void recordSDdata(void const * argument);
 void getBar30Data(void const * argument);
+void kalmanPredict(void const * argument);
+void kalmanUpdate(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -168,12 +177,8 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef* hi2c)
 	{
 		mpu6050.rxFlag=0;
 		MPU6050convertRawData(&mpu6050);
-//
-//		printf("ax %.2f\r\n",*accelx);
-//		printf("ay %.2f\r\n",*accely);
-//	    printf("az %.2f\r\n",*accelz);
-//		printf("MPU6050 data read success");
-//
+		MPU6050filterRawData(&mpu6050);
+
 	}
 
 }
@@ -280,16 +285,22 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
   // Start servo PWM ( pulse duration from 0.9ms to 2.1ms with 1.5 as center ) duty cycle varies from 4.5% to 7.5%
-  //( CCR can go from 450 to 750 )
+  //( CCR can go from 425 to 1175 )
   HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_2);
   HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_3);
   HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_4);
 
-  htim3.Instance->CCR1=600;
-  htim3.Instance->CCR2=600;
-  htim3.Instance->CCR3=600;
-  htim3.Instance->CCR4=600;
+  htim3.Instance->CCR1=SERVO_CENTER_PWM;
+  htim3.Instance->CCR2=SERVO_CENTER_PWM;
+  htim3.Instance->CCR3=SERVO_CENTER_PWM;
+  htim3.Instance->CCR4=SERVO_CENTER_PWM;
+
+  // EKF initialisation
+  float KalmanQ[2]={KALMAN_Q,KALMAN_Q};
+  float KalmanR[3]={KALMAN_R,KALMAN_R,KALMAN_R};
+  float KalmanP[2]={KALMAN_P_INIT,KALMAN_P_INIT};
+  EKF_Init(&ekf,KalmanP,KalmanQ,KalmanR);
 
 
   // Start DMA streams
@@ -297,11 +308,6 @@ int main(void)
   HAL_TIM_Base_Start(&htim2);
   HAL_UART_Receive_DMA(&huart3,uartRxBuffer,8);
 
-  // Put servos in initial positioning (centered)
-  htim3.Instance->CCR1=450;
-  htim3.Instance->CCR2=450;
-  htim3.Instance->CCR3=450;
-  htim3.Instance->CCR4=450;
 
   // sensor initialization
   uint8_t deviceReady;
@@ -353,11 +359,11 @@ int main(void)
   DefaultTaskHandle = osThreadCreate(osThread(DefaultTask), NULL);
 
   /* definition and creation of LEDscreenTask */
-  osThreadDef(LEDscreenTask, sendDataToScreen, osPriorityNormal, 0, 1024);
+  osThreadDef(LEDscreenTask, sendDataToScreen, osPriorityNormal, 0, 128);
   LEDscreenTaskHandle = osThreadCreate(osThread(LEDscreenTask), NULL);
 
   /* definition and creation of controlLoopTask */
-  osThreadDef(controlLoopTask, updateControlLoop, osPriorityHigh, 0, 256);
+  osThreadDef(controlLoopTask, updateControlLoop, osPriorityHigh, 0, 128);
   controlLoopTaskHandle = osThreadCreate(osThread(controlLoopTask), NULL);
 
   /* definition and creation of SDcardTask */
@@ -365,8 +371,16 @@ int main(void)
   SDcardTaskHandle = osThreadCreate(osThread(SDcardTask), NULL);
 
   /* definition and creation of pressureSensorT */
-  osThreadDef(pressureSensorT, getBar30Data, osPriorityNormal, 0, 128);
+  osThreadDef(pressureSensorT, getBar30Data, osPriorityNormal, 0, 256);
   pressureSensorTHandle = osThreadCreate(osThread(pressureSensorT), NULL);
+
+  /* definition and creation of KalmanPredict */
+  osThreadDef(KalmanPredict, kalmanPredict, osPriorityNormal, 0, 256);
+  KalmanPredictHandle = osThreadCreate(osThread(KalmanPredict), NULL);
+
+  /* definition and creation of KalmanUpdate */
+  osThreadDef(KalmanUpdate, kalmanUpdate, osPriorityIdle, 0, 256);
+  KalmanUpdateHandle = osThreadCreate(osThread(KalmanUpdate), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -1014,109 +1028,51 @@ void updateControlLoop(void const * argument)
 {
   /* USER CODE BEGIN updateControlLoop */
 
-//	static uint16_t motorCCR=450;
-//	static uint16_t goUp=1;
-//	static uint16_t goDown=0;
-	static uint8_t variation=5;
+		static uint8_t horizontalCommand=0;
+		static uint8_t verticalCommand=0;
 
-  /* Infinite loop */
-  for(;;)
-  {
+	  /* Infinite loop */
+	  for(;;)
+	  {
+		readJoystick(&joystick);
+		if(joystick.joystickVoltage[0]<JOYSTICK_MIN_THRESHOLD ) // go left
+		{
+			if(verticalCommand=1)
+				neutralRudders();
+			turnLeft();
+			horizontalCommand=1;
+			verticalCommand=0;
 
-	readJoystick(&joystick);
-	//printf("Joystick x %.2f\r\n",joystick.joystickVoltage[0]);
-	//printf("Joystick y %.2f\r\n",joystick.joystickVoltage[1]);
+		}
+		else if(joystick.joystickVoltage[0]>JOYSTICK_MAX_THRESHOLD)//go Right
+		{
+			if(verticalCommand=1)
+				neutralRudders();
+			turnRight();
+			horizontalCommand=1;
+			verticalCommand=0;
+		}
 
-	if(joystick.joystickVoltage[0]<1.02f ) // go left
-	{
-		//go left
-		if(htim3.Instance->CCR1<=750-variation)
-			htim3.Instance->CCR1+=variation;
-
-		if(htim3.Instance->CCR2>=450+variation)
-			htim3.Instance->CCR2-=variation;
-
-	    if(htim3.Instance->CCR3<=750-variation)
-	    	htim3.Instance->CCR3+=variation;
-
-	    if(htim3.Instance->CCR4>=450+variation)
-	    	htim3.Instance->CCR4-=variation;
-
-	}
-	else if(joystick.joystickVoltage[0]>1.83f)
-	{
-		//go Right
-		if(htim3.Instance->CCR1>=450+variation)
-			htim3.Instance->CCR1-=variation;
-
-		if(htim3.Instance->CCR2<=750-variation)
-			htim3.Instance->CCR2+=variation;
-
-		if(htim3.Instance->CCR3>=450+variation)
-			htim3.Instance->CCR3-=variation;
-
-		if(htim3.Instance->CCR4<=750-variation)
-			htim3.Instance->CCR4+=variation;
-	}
-
-	else if (joystick.joystickVoltage[1]<1.02f)
-	{
-		//go down
-		if(htim3.Instance->CCR1<=750-variation)
-			htim3.Instance->CCR1+=variation;
-		if(htim3.Instance->CCR2<=750-variation)
-			htim3.Instance->CCR2+=variation;
-		if(htim3.Instance->CCR3<=750-variation)
-			htim3.Instance->CCR3+=variation;
-		if(htim3.Instance->CCR4<=750-variation)
-			htim3.Instance->CCR4+=variation;
-	}
-	else if(joystick.joystickVoltage[1]>2.7f)
-	{
-		//go up
-		if(htim3.Instance->CCR1>=450+variation)
-			htim3.Instance->CCR1-=variation;
-		if(htim3.Instance->CCR2>=450+variation)
-			htim3.Instance->CCR2-=variation;
-		if(htim3.Instance->CCR3>=450+variation)
-			htim3.Instance->CCR3-=variation;
-		if(htim3.Instance->CCR4>=450+variation)
-			htim3.Instance->CCR4-=variation;
-	}
+		else if (joystick.joystickVoltage[1]<JOYSTICK_MIN_THRESHOLD)//dive
+		{
+			if(horizontalCommand=1)
+				neutralRudders();
+			dive();
+			verticalCommand=1;
+			horizontalCommand=0;
+		}
+		else if(joystick.joystickVoltage[1]>JOYSTICK_MAX_THRESHOLD)//surface
+		{
+			if(horizontalCommand=1)
+				neutralRudders();
+			surface();
+			verticalCommand=1;
+			horizontalCommand=0;
+		}
 
 
-
-
-
-	//yawSpeed=mpu6050.gyr_rps[2];
-
-//	// calculate PID
-//	// write servo output
-//	 htim3.Instance->CCR1=motorCCR;
-//	 if(goUp==1){
-//		 if(motorCCR!=750)
-//			 motorCCR+=10;
-//		 if (motorCCR==750)
-//		 {
-//			 goDown=1;
-//			 goUp=0;
-//
-//		 }
-//	 }
-//	 if (goDown==1){
-//		 if(motorCCR!=450)
-//			 motorCCR-=10;
-//		 if(motorCCR==450){
-//			 goDown=0;
-//			 goUp=1;
-//		 }
-//
-//	 }
-
-
-
-    osDelay(200); // update control loop every 100 ms
-  }
+	    osDelay(20); // update control loop every 20 ms
+	  }
   /* USER CODE END updateControlLoop */
 }
 
@@ -1232,6 +1188,44 @@ void getBar30Data(void const * argument)
     osDelay(250);
   }
   /* USER CODE END getBar30Data */
+}
+
+/* USER CODE BEGIN Header_kalmanPredict */
+/**
+* @brief Function implementing the KalmanPredict thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_kalmanPredict */
+void kalmanPredict(void const * argument)
+{
+  /* USER CODE BEGIN kalmanPredict */
+  /* Infinite loop */
+  for(;;)
+  {
+	EKF_Predict(&ekf, mpu6050.gyr_rps[0], mpu6050.gyr_rps[1], mpu6050.gyr_rps[2], 0.02f);
+    osDelay(20);
+  }
+  /* USER CODE END kalmanPredict */
+}
+
+/* USER CODE BEGIN Header_kalmanUpdate */
+/**
+* @brief Function implementing the KalmanUpdate thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_kalmanUpdate */
+void kalmanUpdate(void const * argument)
+{
+  /* USER CODE BEGIN kalmanUpdate */
+  /* Infinite loop */
+  for(;;)
+  {
+	EKF_Update(&ekf, mpu6050.acc_mps2[0], mpu6050.acc_mps2[1], mpu6050.acc_mps2[2]);
+    osDelay(200);
+  }
+  /* USER CODE END kalmanUpdate */
 }
 
 /**

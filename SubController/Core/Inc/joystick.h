@@ -3,7 +3,8 @@
 #ifndef INC_JOYSTICK_H_
 #define INC_JOYSTICK_H_
 
-
+#define JOYSTICK_MIN_THRESHOLD 1.02f
+#define JOYSTICK_MAX_THRESHOLD 1.83f
 
 
 

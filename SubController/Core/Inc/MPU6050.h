@@ -29,6 +29,8 @@
 #define MPU6050_ACC_RAW_TO_MPS2 0.00059875482f
 #define MPU6050_GYR_RAW_TO_RPS  0.00013323124f
 
+#define LPF_ACC_ALPHA 0.50f
+#define LPF_GYR_ALPHA 0.1f
 // structure for MPU6050 data
 
 typedef struct{
@@ -56,6 +58,7 @@ uint8_t i2cWriteRegMPU6050(uint16_t devAddr, uint16_t RegAddr, uint8_t* data);
 uint8_t MPU6050init(MPU6050* imu, I2C_HandleTypeDef* i2cHandle);
 uint8_t MPU6050readDataDMA(MPU6050* imu);
 void MPU6050convertRawData(MPU6050* imu);
+void filterRawData(MPU6050* imu);
 
 
 #endif /* INC_MPU6050_H_ */
