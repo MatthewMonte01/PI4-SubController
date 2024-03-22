@@ -1,15 +1,15 @@
 #include "KalmanRollPitch.h"
 
 
-void EKF_Init(EKF *ekf, float P[2], float Q[2], float R[3]) {
+void EKF_Init(EKF *ekf, float P, float Q[2], float R[3]) {
 
 	/* Reset state estimates */
 	ekf->phi_r 		= 0.0f;
 	ekf->theta_r 	= 0.0f;
 
 	/* Initialise state covariance matrix */
-	ekf->P[0][0] = P[0]; ekf->P[0][1] = 0.0f;
-	ekf->P[1][0] = 0.0f; ekf->P[1][1] = P[1];
+	ekf->P[0][0] = P; ekf->P[0][1] = 0.0f;
+	ekf->P[1][0] = 0.0f; ekf->P[1][1] = P;
 
 	/* Set process and measurement noise */
 	ekf->Q[0] = Q[0];

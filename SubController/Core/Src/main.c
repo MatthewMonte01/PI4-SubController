@@ -177,8 +177,7 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef* hi2c)
 	{
 		mpu6050.rxFlag=0;
 		MPU6050convertRawData(&mpu6050);
-		MPU6050filterRawData(&mpu6050);
-
+		//MPU6050filterRawData(&mpu6050);
 	}
 
 }
@@ -299,7 +298,7 @@ int main(void)
   // EKF initialisation
   float KalmanQ[2]={KALMAN_Q,KALMAN_Q};
   float KalmanR[3]={KALMAN_R,KALMAN_R,KALMAN_R};
-  float KalmanP[2]={KALMAN_P_INIT,KALMAN_P_INIT};
+  float KalmanP=KALMAN_P_INIT;
   EKF_Init(&ekf,KalmanP,KalmanQ,KalmanR);
 
 
@@ -367,7 +366,7 @@ int main(void)
   controlLoopTaskHandle = osThreadCreate(osThread(controlLoopTask), NULL);
 
   /* definition and creation of SDcardTask */
-  osThreadDef(SDcardTask, recordSDdata, osPriorityAboveNormal, 0, 2048);
+  osThreadDef(SDcardTask, recordSDdata, osPriorityNormal, 0, 2048);
   SDcardTaskHandle = osThreadCreate(osThread(SDcardTask), NULL);
 
   /* definition and creation of pressureSensorT */
@@ -375,11 +374,11 @@ int main(void)
   pressureSensorTHandle = osThreadCreate(osThread(pressureSensorT), NULL);
 
   /* definition and creation of KalmanPredict */
-  osThreadDef(KalmanPredict, kalmanPredict, osPriorityNormal, 0, 256);
+  osThreadDef(KalmanPredict, kalmanPredict, osPriorityAboveNormal, 0, 256);
   KalmanPredictHandle = osThreadCreate(osThread(KalmanPredict), NULL);
 
   /* definition and creation of KalmanUpdate */
-  osThreadDef(KalmanUpdate, kalmanUpdate, osPriorityIdle, 0, 256);
+  osThreadDef(KalmanUpdate, kalmanUpdate, osPriorityNormal, 0, 512);
   KalmanUpdateHandle = osThreadCreate(osThread(KalmanUpdate), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -984,30 +983,30 @@ void sendDataToScreen(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	  switch(currentState){
-		  case IDLE_STATE:
-			  // request byte is received in background via cicular DMA
-			  break;
-
-		  case SEND_ACK_STATE:
-			  uint8_t ackByte=0x10;
-			  HAL_UART_Transmit(&huart3,&ackByte,1,100);
-			  break;
-
-
-		  case SENDING_DATA_STATE:
-			  uartTxBuffer[0]=0xAA;
-			  uartTxBuffer[1]=0xBB;
-			  uartTxBuffer[2]=0xCC;
-			  uartTxBuffer[3]=0xDD;
-			  uartTxBuffer[4]=0xEE;
-			  uartTxBuffer[5]=0xFF;
-			  uartTxBuffer[6]=0x00;
-			  uartTxBuffer[7]=0x01;
-			  txStatus=HAL_UART_Transmit(&huart3,txbufptr,8,10);
-			  break;
-
-	  }
+//	  switch(currentState){
+//		  case IDLE_STATE:
+//			  // request byte is received in background via cicular DMA
+//			  break;
+//
+//		  case SEND_ACK_STATE:
+//			  uint8_t ackByte=0x10;
+//			  HAL_UART_Transmit(&huart3,&ackByte,1,100);
+//			  break;
+//
+//
+//		  case SENDING_DATA_STATE:
+//			  uartTxBuffer[0]=0xAA;
+//			  uartTxBuffer[1]=0xBB;
+//			  uartTxBuffer[2]=0xCC;
+//			  uartTxBuffer[3]=0xDD;
+//			  uartTxBuffer[4]=0xEE;
+//			  uartTxBuffer[5]=0xFF;
+//			  uartTxBuffer[6]=0x00;
+//			  uartTxBuffer[7]=0x01;
+//			  txStatus=HAL_UART_Transmit(&huart3,txbufptr,8,10);
+//			  break;
+//
+//	  }
 
 
 	  osDelay(50000); //
@@ -1037,7 +1036,7 @@ void updateControlLoop(void const * argument)
 		readJoystick(&joystick);
 		if(joystick.joystickVoltage[0]<JOYSTICK_MIN_THRESHOLD ) // go left
 		{
-			if(verticalCommand=1)
+			if(verticalCommand==1)
 				neutralRudders();
 			turnLeft();
 			horizontalCommand=1;
@@ -1046,7 +1045,7 @@ void updateControlLoop(void const * argument)
 		}
 		else if(joystick.joystickVoltage[0]>JOYSTICK_MAX_THRESHOLD)//go Right
 		{
-			if(verticalCommand=1)
+			if(verticalCommand==1)
 				neutralRudders();
 			turnRight();
 			horizontalCommand=1;
@@ -1055,7 +1054,7 @@ void updateControlLoop(void const * argument)
 
 		else if (joystick.joystickVoltage[1]<JOYSTICK_MIN_THRESHOLD)//dive
 		{
-			if(horizontalCommand=1)
+			if(horizontalCommand==1)
 				neutralRudders();
 			dive();
 			verticalCommand=1;
@@ -1063,7 +1062,7 @@ void updateControlLoop(void const * argument)
 		}
 		else if(joystick.joystickVoltage[1]>JOYSTICK_MAX_THRESHOLD)//surface
 		{
-			if(horizontalCommand=1)
+			if(horizontalCommand==1)
 				neutralRudders();
 			surface();
 			verticalCommand=1;
@@ -1071,7 +1070,7 @@ void updateControlLoop(void const * argument)
 		}
 
 
-	    osDelay(20); // update control loop every 20 ms
+	    osDelay(100); // update control loop every 100 ms
 	  }
   /* USER CODE END updateControlLoop */
 }
@@ -1094,33 +1093,33 @@ void recordSDdata(void const * argument)
 	  	printf("SD card thread is called!");
 
 	  	fres = f_mount(&fs, "", 0);
-	  	if (fres == FR_OK) {
-	  		printf("Micro SD card is mounted successfully!\n");
-	  	} else if (fres != FR_OK) {
-	  		printf("Micro SD card's mount error!\n");
-	  	}
+//	  	if (fres == FR_OK) {
+//	  		printf("Micro SD card is mounted successfully!\n");
+//	  	} else if (fres != FR_OK) {
+//	  		printf("Micro SD card's mount error!\n");
+//	  	}
 
 	  	// FA_OPEN_APPEND opens file if it exists and if not then creates it,
 	  	// the pointer is set at the end of the file for appending
 	  	fres = f_open(&fil, "accel.txt", FA_OPEN_APPEND | FA_WRITE | FA_READ);
-	  	if (fres == FR_OK) {
-	  		printf("File opened for reading and checking the free space.\n");
-	  	} else if (fres != FR_OK) {
-	  		printf("File was not opened for reading and checking the free space!\n");
-	  	}
+//	  	if (fres == FR_OK) {
+//	  		printf("File opened for reading and checking the free space.\n");
+//	  	} else if (fres != FR_OK) {
+//	  		printf("File was not opened for reading and checking the free space!\n");
+//	  	}
 
 	  	fres = f_getfree("", &fre_clust, &pfs);
 	  	totalSpace = (uint32_t) ((pfs->n_fatent - 2) * pfs->csize * 0.5);
 	  	freeSpace = (uint32_t) (fre_clust * pfs->csize * 0.5);
 	  	char mSz[12];
 	  	sprintf(mSz, "%lu", freeSpace);
-	  	if (fres == FR_OK) {
-	  		printf("The free space is: ");
-	  		printf(mSz);
-	  		printf("\n");
-	  	} else if (fres != FR_OK) {
-	  		printf("The free space could not be determined!\n");
-	  	}
+//	  	if (fres == FR_OK) {
+//	  		printf("The free space is: ");
+//	  		printf(mSz);
+//	  		printf("\n");
+//	  	} else if (fres != FR_OK) {
+//	  		printf("The free space could not be determined!\n");
+//	  	}
 
 //	  	for (uint8_t i = 0; i < 10; i++) {
 //	  		f_puts("NEW BOARD TEST.\n", &fil);
@@ -1130,11 +1129,11 @@ void recordSDdata(void const * argument)
 	  	f_puts(accDataString, &fil);
 
 	  	fres = f_close(&fil);
-	  	if (fres == FR_OK) {
-	  		printf("The file is closed.\n");
-	  	} else if (fres != FR_OK) {
-	  		printf("The file was not closed.\n");
-	  	}
+//	  	if (fres == FR_OK) {
+//	  		printf("The file is closed.\n");
+//	  	} else if (fres != FR_OK) {
+//	  		printf("The file was not closed.\n");
+//	  	}
 
 //	  	// Open file to read
 //	  	fres = f_open(&fil, "hi.txt", FA_READ);
@@ -1160,11 +1159,11 @@ void recordSDdata(void const * argument)
 //	  	}
 
 	  	f_mount(NULL, "", 1);
-	  	if (fres == FR_OK) {
-	  		printf("The Micro SD card is unmounted!\n");
-	  	} else if (fres != FR_OK) {
-	  		printf("The Micro SD was not unmounted!");
-	  	}
+//	  	if (fres == FR_OK) {
+//	  		printf("The Micro SD card is unmounted!\n");
+//	  	} else if (fres != FR_OK) {
+//	  		printf("The Micro SD was not unmounted!");
+//	  	}
     osDelay(5000); // write SD card data every 5 seconds
   }
   /* USER CODE END recordSDdata */
@@ -1203,8 +1202,12 @@ void kalmanPredict(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	EKF_Predict(&ekf, mpu6050.gyr_rps[0], mpu6050.gyr_rps[1], mpu6050.gyr_rps[2], 0.02f);
-    osDelay(20);
+	if(mpu6050.gyr_rps[0]!=0.0f && mpu6050.gyr_rps[1]!=0.0f && mpu6050.gyr_rps[2]!=0.0f)
+		EKF_Predict(&ekf, mpu6050.gyr_rps[0], mpu6050.gyr_rps[1], mpu6050.gyr_rps[2], 0.2f);
+	//char angleDataString[50];
+	//sprintf(angleDataString, "roll=%3f, pitch=%3f", ekf.phi_r,  ekf.theta_r);
+	//printf(angleDataString);
+    osDelay(200);
   }
   /* USER CODE END kalmanPredict */
 }
@@ -1222,8 +1225,9 @@ void kalmanUpdate(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	EKF_Update(&ekf, mpu6050.acc_mps2[0], mpu6050.acc_mps2[1], mpu6050.acc_mps2[2]);
-    osDelay(200);
+	if(mpu6050.acc_mps2[0]!=0.0f && mpu6050.acc_mps2[1]!=0.0f && mpu6050.acc_mps2[2]!=0.0f)
+		EKF_Update(&ekf, mpu6050.acc_mps2[0], mpu6050.acc_mps2[1], mpu6050.acc_mps2[2]);
+    osDelay(2000);
   }
   /* USER CODE END kalmanUpdate */
 }

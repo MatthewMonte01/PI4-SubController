@@ -21,7 +21,7 @@ typedef struct {
 
 } EKF;
 
-void EKF_Init(EKF *ekf, float P[2], float Q[2], float R[3]);
+void EKF_Init(EKF *ekf, float P, float Q[2], float R[3]);
 
 void EKF_Predict(EKF *ekf, float p_rps, float q_rps, float r_rps, float sampleTime_s);
 
