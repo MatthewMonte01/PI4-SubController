@@ -62,7 +62,9 @@ char buffer[100];
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
+ADC_HandleTypeDef hadc2;
 DMA_HandleTypeDef hdma_adc1;
+DMA_HandleTypeDef hdma_adc2;
 
 I2C_HandleTypeDef hi2c1;
 I2C_HandleTypeDef hi2c2;
@@ -73,6 +75,7 @@ SPI_HandleTypeDef hspi2;
 
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim8;
 
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
@@ -84,13 +87,13 @@ osThreadId LEDscreenTaskHandle;
 osThreadId controlLoopTaskHandle;
 osThreadId SDcardTaskHandle;
 osThreadId pressureSensorTHandle;
-osThreadId KalmanPredictHandle;
-osThreadId KalmanUpdateHandle;
 osMessageQId senderHandle;
 osMessageQId receiverHandle;
 /* USER CODE BEGIN PV */
 
 Joystick joystick;
+uint32_t adc1Data;
+uint32_t adc2Data;
 
 EKF ekf;
 MPU6050 mpu6050;
@@ -136,13 +139,13 @@ static void MX_TIM2_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USB_OTG_FS_USB_Init(void);
 static void MX_USART3_UART_Init(void);
+static void MX_ADC2_Init(void);
+static void MX_TIM8_Init(void);
 void defaultTask(void const * argument);
 void sendDataToScreen(void const * argument);
 void updateControlLoop(void const * argument);
 void recordSDdata(void const * argument);
 void getBar30Data(void const * argument);
-void kalmanPredict(void const * argument);
-void kalmanUpdate(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -189,11 +192,16 @@ void transmit_uart(char* string){
 
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 {
-//	if(hadc->Instance==ADC1){
-//		printf("Joystick x %.2f\r\n",joystick.joystickVoltage[0]);
-//		printf("Joystick y %.2f\r\n",joystick.joystickVoltage[1]);
-//	}
+	if(hadc->Instance==ADC1){
+		joystick.joystickData[0]=adc1Data;
+		joystick.joystickVoltage[0]=(float)joystick.joystickData[0]*3.3/4095.0f;
 
+	}
+	if(hadc->Instance==ADC2){
+		joystick.joystickData[1]=adc2Data;
+		joystick.joystickVoltage[1]=(float)joystick.joystickData[1]*3.3/4095.0f;
+
+	}
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
@@ -248,6 +256,7 @@ int _write(int file, char *ptr, int len)
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -281,6 +290,8 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USB_OTG_FS_USB_Init();
   MX_USART3_UART_Init();
+  MX_ADC2_Init();
+  MX_TIM8_Init();
   /* USER CODE BEGIN 2 */
 
   // Start servo PWM ( pulse duration from 0.9ms to 2.1ms with 1.5 as center ) duty cycle varies from 4.5% to 7.5%
@@ -303,8 +314,11 @@ int main(void)
 
 
   // Start DMA streams
-  HAL_ADC_Start_DMA(&hadc1,joystick.joystickData,2);
+
+  HAL_ADC_Start_DMA(&hadc1,&adc1Data,1);
+  HAL_ADC_Start_DMA(&hadc2,&adc2Data,1);
   HAL_TIM_Base_Start(&htim2);
+  HAL_TIM_Base_Start(&htim8);
   HAL_UART_Receive_DMA(&huart3,uartRxBuffer,8);
 
 
@@ -358,28 +372,20 @@ int main(void)
   DefaultTaskHandle = osThreadCreate(osThread(DefaultTask), NULL);
 
   /* definition and creation of LEDscreenTask */
-  osThreadDef(LEDscreenTask, sendDataToScreen, osPriorityNormal, 0, 128);
+  osThreadDef(LEDscreenTask, sendDataToScreen, osPriorityNormal, 0, 1024);
   LEDscreenTaskHandle = osThreadCreate(osThread(LEDscreenTask), NULL);
 
   /* definition and creation of controlLoopTask */
-  osThreadDef(controlLoopTask, updateControlLoop, osPriorityHigh, 0, 128);
+  osThreadDef(controlLoopTask, updateControlLoop, osPriorityHigh, 0, 256);
   controlLoopTaskHandle = osThreadCreate(osThread(controlLoopTask), NULL);
 
   /* definition and creation of SDcardTask */
-  osThreadDef(SDcardTask, recordSDdata, osPriorityNormal, 0, 2048);
+  osThreadDef(SDcardTask, recordSDdata, osPriorityAboveNormal, 0, 2048);
   SDcardTaskHandle = osThreadCreate(osThread(SDcardTask), NULL);
 
   /* definition and creation of pressureSensorT */
-  osThreadDef(pressureSensorT, getBar30Data, osPriorityNormal, 0, 256);
+  osThreadDef(pressureSensorT, getBar30Data, osPriorityNormal, 0, 128);
   pressureSensorTHandle = osThreadCreate(osThread(pressureSensorT), NULL);
-
-  /* definition and creation of KalmanPredict */
-  osThreadDef(KalmanPredict, kalmanPredict, osPriorityAboveNormal, 0, 256);
-  KalmanPredictHandle = osThreadCreate(osThread(KalmanPredict), NULL);
-
-  /* definition and creation of KalmanUpdate */
-  osThreadDef(KalmanUpdate, kalmanUpdate, osPriorityNormal, 0, 512);
-  KalmanUpdateHandle = osThreadCreate(osThread(KalmanUpdate), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -389,6 +395,7 @@ int main(void)
   osKernelStart();
 
   /* We should never get here as control is now taken by the scheduler */
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
@@ -453,7 +460,7 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV4;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
   {
@@ -490,8 +497,8 @@ static void MX_ADC1_Init(void)
   hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_RISING;
   hadc1.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T2_TRGO;
   hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 2;
-  hadc1.Init.DMAContinuousRequests = DISABLE;
+  hadc1.Init.NbrOfConversion = 1;
+  hadc1.Init.DMAContinuousRequests = ENABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   if (HAL_ADC_Init(&hadc1) != HAL_OK)
   {
@@ -507,18 +514,61 @@ static void MX_ADC1_Init(void)
   {
     Error_Handler();
   }
+  /* USER CODE BEGIN ADC1_Init 2 */
+
+  /* USER CODE END ADC1_Init 2 */
+
+}
+
+/**
+  * @brief ADC2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_ADC2_Init(void)
+{
+
+  /* USER CODE BEGIN ADC2_Init 0 */
+
+  /* USER CODE END ADC2_Init 0 */
+
+  ADC_ChannelConfTypeDef sConfig = {0};
+
+  /* USER CODE BEGIN ADC2_Init 1 */
+
+  /* USER CODE END ADC2_Init 1 */
+
+  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
+  */
+  hadc2.Instance = ADC2;
+  hadc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+  hadc2.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc2.Init.ScanConvMode = DISABLE;
+  hadc2.Init.ContinuousConvMode = DISABLE;
+  hadc2.Init.DiscontinuousConvMode = DISABLE;
+  hadc2.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_FALLING;
+  hadc2.Init.ExternalTrigConv = ADC_EXTERNALTRIGCONV_T2_TRGO;
+  hadc2.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  hadc2.Init.NbrOfConversion = 1;
+  hadc2.Init.DMAContinuousRequests = ENABLE;
+  hadc2.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  if (HAL_ADC_Init(&hadc2) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
   /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
   */
   sConfig.Channel = ADC_CHANNEL_1;
-  sConfig.Rank = 2;
-  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+  sConfig.Rank = 1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN ADC1_Init 2 */
+  /* USER CODE BEGIN ADC2_Init 2 */
 
-  /* USER CODE END ADC1_Init 2 */
+  /* USER CODE END ADC2_Init 2 */
 
 }
 
@@ -642,6 +692,7 @@ static void MX_TIM2_Init(void)
 
   TIM_ClockConfigTypeDef sClockSourceConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
 
   /* USER CODE BEGIN TIM2_Init 1 */
 
@@ -661,9 +712,21 @@ static void MX_TIM2_Init(void)
   {
     Error_Handler();
   }
+  if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
   {
     Error_Handler();
   }
@@ -731,6 +794,80 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 2 */
   HAL_TIM_MspPostInit(&htim3);
+
+}
+
+/**
+  * @brief TIM8 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM8_Init(void)
+{
+
+  /* USER CODE BEGIN TIM8_Init 0 */
+
+  /* USER CODE END TIM8_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
+  TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig = {0};
+
+  /* USER CODE BEGIN TIM8_Init 1 */
+
+  /* USER CODE END TIM8_Init 1 */
+  htim8.Instance = TIM8;
+  htim8.Init.Prescaler = 8400-1;
+  htim8.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim8.Init.Period = 1000-1;
+  htim8.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim8.Init.RepetitionCounter = 0;
+  htim8.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim8, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_PWM_Init(&htim8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim8, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
+  sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
+  if (HAL_TIM_PWM_ConfigChannel(&htim8, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
+  sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
+  sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
+  sBreakDeadTimeConfig.DeadTime = 0;
+  sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;
+  sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
+  sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
+  if (HAL_TIMEx_ConfigBreakDeadTime(&htim8, &sBreakDeadTimeConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM8_Init 2 */
+
+  /* USER CODE END TIM8_Init 2 */
 
 }
 
@@ -847,6 +984,9 @@ static void MX_DMA_Init(void)
   /* DMA2_Stream0_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Stream0_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA2_Stream0_IRQn);
+  /* DMA2_Stream2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream2_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream2_IRQn);
 
 }
 
@@ -1033,21 +1173,21 @@ void updateControlLoop(void const * argument)
 	  /* Infinite loop */
 	  for(;;)
 	  {
-		readJoystick(&joystick);
-		if(joystick.joystickVoltage[0]<JOYSTICK_MIN_THRESHOLD ) // go left
-		{
-			if(verticalCommand==1)
-				neutralRudders();
-			turnLeft();
-			horizontalCommand=1;
-			verticalCommand=0;
 
-		}
-		else if(joystick.joystickVoltage[0]>JOYSTICK_MAX_THRESHOLD)//go Right
+		if(joystick.joystickVoltage[0]<JOYSTICK_MIN_THRESHOLD ) // go Right
 		{
 			if(verticalCommand==1)
 				neutralRudders();
 			turnRight();
+			horizontalCommand=1;
+			verticalCommand=0;
+
+		}
+		else if(joystick.joystickVoltage[0]>JOYSTICK_MAX_THRESHOLD)//go Left
+		{
+			if(verticalCommand==1)
+				neutralRudders();
+			turnLeft();
 			horizontalCommand=1;
 			verticalCommand=0;
 		}
@@ -1068,6 +1208,9 @@ void updateControlLoop(void const * argument)
 			verticalCommand=1;
 			horizontalCommand=0;
 		}
+		else
+			neutralRudders();
+
 
 
 	    osDelay(100); // update control loop every 100 ms
@@ -1136,7 +1279,7 @@ void recordSDdata(void const * argument)
 //	  	}
 
 //	  	// Open file to read
-//	  	fres = f_open(&fil, "hi.txt", FA_READ);
+	  	fres = f_open(&fil, "hi.txt", FA_READ);
 //	  	if (fres == FR_OK) {
 //	  		printf("File opened for reading.\n");
 //	  	} else if (fres != FR_OK) {
@@ -1151,7 +1294,7 @@ void recordSDdata(void const * argument)
 //	  	}
 
 //	  	 //Close file
-//	  	fres = f_close(&fil);
+	  	fres = f_close(&fil);
 //	  	if (fres == FR_OK) {
 //	  		printf("The file is closed.\n");
 //	  	} else if (fres != FR_OK) {
@@ -1183,53 +1326,10 @@ void getBar30Data(void const * argument)
 	static uint8_t i2cGood=1;
   for(;;)
   {
-	 i2cGood=Bar30getData(&pressureSensor);
+	i2cGood=Bar30getData(&pressureSensor);
     osDelay(250);
   }
   /* USER CODE END getBar30Data */
-}
-
-/* USER CODE BEGIN Header_kalmanPredict */
-/**
-* @brief Function implementing the KalmanPredict thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_kalmanPredict */
-void kalmanPredict(void const * argument)
-{
-  /* USER CODE BEGIN kalmanPredict */
-  /* Infinite loop */
-  for(;;)
-  {
-	if(mpu6050.gyr_rps[0]!=0.0f && mpu6050.gyr_rps[1]!=0.0f && mpu6050.gyr_rps[2]!=0.0f)
-		EKF_Predict(&ekf, mpu6050.gyr_rps[0], mpu6050.gyr_rps[1], mpu6050.gyr_rps[2], 0.2f);
-	//char angleDataString[50];
-	//sprintf(angleDataString, "roll=%3f, pitch=%3f", ekf.phi_r,  ekf.theta_r);
-	//printf(angleDataString);
-    osDelay(200);
-  }
-  /* USER CODE END kalmanPredict */
-}
-
-/* USER CODE BEGIN Header_kalmanUpdate */
-/**
-* @brief Function implementing the KalmanUpdate thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_kalmanUpdate */
-void kalmanUpdate(void const * argument)
-{
-  /* USER CODE BEGIN kalmanUpdate */
-  /* Infinite loop */
-  for(;;)
-  {
-	if(mpu6050.acc_mps2[0]!=0.0f && mpu6050.acc_mps2[1]!=0.0f && mpu6050.acc_mps2[2]!=0.0f)
-		EKF_Update(&ekf, mpu6050.acc_mps2[0], mpu6050.acc_mps2[1], mpu6050.acc_mps2[2]);
-    osDelay(2000);
-  }
-  /* USER CODE END kalmanUpdate */
 }
 
 /**

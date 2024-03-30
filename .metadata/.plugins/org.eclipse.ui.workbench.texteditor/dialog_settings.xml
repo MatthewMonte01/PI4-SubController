@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="fil"/>
+		<item key="selection" value="printf"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="printf"/>
+			<item value="Q"/>
 			<item value="fil"/>
 			<item value="&amp;fil"/>
 			<item value="SELECT"/>
 			<item value="Timer1"/>
 			<item value="type"/>
 			<item value="CardType"/>
-			<item value="printf"/>
 			<item value="chilling"/>
 			<item value="transferControlByte"/>
 			<item value="ack"/>
@@ -22,7 +23,6 @@
 			<item value="uartTxBuffer"/>
 			<item value="MPU6050"/>
 			<item value="transmit"/>
-			<item value="long"/>
 		</list>
 		<list key="replacehistory">
 			<item value=" "/>

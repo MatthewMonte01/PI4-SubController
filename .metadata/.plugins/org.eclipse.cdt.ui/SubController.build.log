@@ -1,10 +1,10 @@
-22:37:15 **** Incremental Build of configuration Debug for project SubController ****
+09:40:11 **** Incremental Build of configuration Debug for project SubController ****
 make -j6 all 
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
 In file included from ../Core/Src/main.c:30:
 ../Core/Inc/joystick.h: In function 'readJoystick':
-../Core/Inc/joystick.h:19:39: warning: passing argument 2 of 'HAL_ADC_Start_DMA' from incompatible pointer type [-Wincompatible-pointer-types]
-   19 |         HAL_ADC_Start_DMA(&hadc1,stick->joystickData,2);
+../Core/Inc/joystick.h:20:39: warning: passing argument 2 of 'HAL_ADC_Start_DMA' from incompatible pointer type [-Wincompatible-pointer-types]
+   20 |         HAL_ADC_Start_DMA(&hadc1,stick->joystickData,2);
       |                                  ~~~~~^~~~~~~~~~~~~~
       |                                       |
       |                                       uint16_t * {aka short unsigned int *}
@@ -16,23 +16,23 @@ In file included from ../Core/Inc/stm32f4xx_hal_conf.h:295,
   594 | HAL_StatusTypeDef HAL_ADC_Start_DMA(ADC_HandleTypeDef* hadc, uint32_t* pData, uint32_t Length);
       |                                                              ~~~~~~~~~~^~~~~
 In file included from ../Core/Src/main.c:30:
-../Core/Inc/joystick.h:20:9: warning: implicit declaration of function 'convertRaw2Voltage' [-Wimplicit-function-declaration]
-   20 |         convertRaw2Voltage(stick);
+../Core/Inc/joystick.h:21:9: warning: implicit declaration of function 'convertRaw2Voltage' [-Wimplicit-function-declaration]
+   21 |         convertRaw2Voltage(stick);
       |         ^~~~~~~~~~~~~~~~~~
 ../Core/Inc/joystick.h: At top level:
-../Core/Inc/joystick.h:24:6: warning: conflicting types for 'convertRaw2Voltage'; have 'void(Joystick *)'
-   24 | void convertRaw2Voltage( Joystick* stick)
+../Core/Inc/joystick.h:25:6: warning: conflicting types for 'convertRaw2Voltage'; have 'void(Joystick *)'
+   25 | void convertRaw2Voltage( Joystick* stick)
       |      ^~~~~~~~~~~~~~~~~~
-../Core/Inc/joystick.h:20:9: note: previous implicit declaration of 'convertRaw2Voltage' with type 'void(Joystick *)'
-   20 |         convertRaw2Voltage(stick);
+../Core/Inc/joystick.h:21:9: note: previous implicit declaration of 'convertRaw2Voltage' with type 'void(Joystick *)'
+   21 |         convertRaw2Voltage(stick);
       |         ^~~~~~~~~~~~~~~~~~
 ../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
-../Core/Src/main.c:207:37: warning: statement with no effect [-Wunused-value]
-  207 |                         currentState==IDLE_STATE;
+../Core/Src/main.c:211:37: warning: statement with no effect [-Wunused-value]
+  211 |                         currentState==IDLE_STATE;
       |                         ~~~~~~~~~~~~^~~~~~~~~~~~
 ../Core/Src/main.c: In function 'main':
-../Core/Src/main.c:296:36: warning: passing argument 2 of 'HAL_ADC_Start_DMA' from incompatible pointer type [-Wincompatible-pointer-types]
-  296 |   HAL_ADC_Start_DMA(&hadc1,joystick.joystickData,2);
+../Core/Src/main.c:306:36: warning: passing argument 2 of 'HAL_ADC_Start_DMA' from incompatible pointer type [-Wincompatible-pointer-types]
+  306 |   HAL_ADC_Start_DMA(&hadc1,joystick.joystickData,2);
       |                            ~~~~~~~~^~~~~~~~~~~~~
       |                                    |
       |                                    uint16_t * {aka short unsigned int *}
@@ -43,34 +43,34 @@ In file included from ../Core/Inc/stm32f4xx_hal_conf.h:295,
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h:594:72: note: expected 'uint32_t *' {aka 'long unsigned int *'} but argument is of type 'uint16_t *' {aka 'short unsigned int *'}
   594 | HAL_StatusTypeDef HAL_ADC_Start_DMA(ADC_HandleTypeDef* hadc, uint32_t* pData, uint32_t Length);
       |                                                              ~~~~~~~~~~^~~~~
-../Core/Src/main.c:311:21: warning: variable 'stat' set but not used [-Wunused-but-set-variable]
-  311 |   HAL_StatusTypeDef stat;
+../Core/Src/main.c:316:21: warning: variable 'stat' set but not used [-Wunused-but-set-variable]
+  316 |   HAL_StatusTypeDef stat;
       |                     ^~~~
-../Core/Src/main.c:309:11: warning: unused variable 'configGood' [-Wunused-variable]
-  309 |   uint8_t configGood=MPU6050init(&mpu6050,&hi2c1 );
+../Core/Src/main.c:314:11: warning: unused variable 'configGood' [-Wunused-variable]
+  314 |   uint8_t configGood=MPU6050init(&mpu6050,&hi2c1 );
       |           ^~~~~~~~~~
-../Core/Src/main.c:307:11: warning: variable 'deviceReady' set but not used [-Wunused-but-set-variable]
-  307 |   uint8_t deviceReady;
+../Core/Src/main.c:312:11: warning: variable 'deviceReady' set but not used [-Wunused-but-set-variable]
+  312 |   uint8_t deviceReady;
       |           ^~~~~~~~~~~
-../Core/Src/main.c: In function 'sendDataToScreen':
-../Core/Src/main.c:973:11: warning: enumeration value 'ERROR_STATE' not handled in switch [-Wswitch]
-  973 |           switch(currentState){
-      |           ^~~~~~
 ../Core/Src/main.c: In function 'getBar30Data':
-../Core/Src/main.c:1228:24: warning: variable 'i2cGood' set but not used [-Wunused-but-set-variable]
- 1228 |         static uint8_t i2cGood=1;
+../Core/Src/main.c:1183:24: warning: variable 'i2cGood' set but not used [-Wunused-but-set-variable]
+ 1183 |         static uint8_t i2cGood=1;
       |                        ^~~~~~~
+At top level:
+../Core/Src/main.c:118:26: warning: 'txStatus' defined but not used [-Wunused-variable]
+  118 | static HAL_StatusTypeDef txStatus;
+      |                          ^~~~~~~~
 arm-none-eabi-gcc -o "SubController.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SubController.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: SubController.elf
  
 arm-none-eabi-size  SubController.elf 
 arm-none-eabi-objdump -h -S SubController.elf  > "SubController.list"
    text	   data	    bss	    dec	    hex	filename
-  90748	    512	  28552	 119812	  1d404	SubController.elf
+  97912	    504	  28600	 127016	  1f028	SubController.elf
 Finished building: default.size.stdout
  
 Finished building: SubController.list
  
 
-22:37:17 Build Finished. 0 errors, 10 warnings. (took 1s.780ms)
+09:40:13 Build Finished. 0 errors, 10 warnings. (took 1s.470ms)
 

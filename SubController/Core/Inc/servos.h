@@ -9,7 +9,7 @@
 #define SERVO_MAX_PWM 1175
 #define SERVO_MIN_PWM 425
 #define SERVO_CENTER_PWM 800
-#define SERVO_ANGLE_VARIATION 60  // this paramater sets servo rotation speed
+#define SERVO_ANGLE_VARIATION 225  // Ce paramètre contrôle la vitesse de rotation du servo
 
 
 
