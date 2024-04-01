@@ -87,6 +87,8 @@ osThreadId LEDscreenTaskHandle;
 osThreadId controlLoopTaskHandle;
 osThreadId SDcardTaskHandle;
 osThreadId pressureSensorTHandle;
+osThreadId KalmanPredictHandle;
+osThreadId KalmanUpdateHandle;
 osMessageQId senderHandle;
 osMessageQId receiverHandle;
 /* USER CODE BEGIN PV */
@@ -102,6 +104,7 @@ Bar30 pressureSensor;
 uint8_t readCount=0;
 uint8_t message=0;
 uint8_t mpuIntCount=0;
+uint8_t numCalibrationMeas=0;
 
 float* accelx=&mpu6050.acc_mps2[0];
 float* accely=&mpu6050.acc_mps2[1];
@@ -146,6 +149,8 @@ void sendDataToScreen(void const * argument);
 void updateControlLoop(void const * argument);
 void recordSDdata(void const * argument);
 void getBar30Data(void const * argument);
+void EKFpredict(void const * argument);
+void EKFupdate(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -170,6 +175,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 			message=MPU6050readDataDMA(&mpu6050);
 			//printf("error message: %i\r\n:",message);
 			mpuIntCount=0;
+			//mpu6050.numCalibrationMeas=mpu6050.numCalibrationMeas+1;
 		}
 	}
 }
@@ -181,6 +187,7 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef* hi2c)
 		mpu6050.rxFlag=0;
 		MPU6050convertRawData(&mpu6050);
 		//MPU6050filterRawData(&mpu6050);
+
 	}
 
 }
@@ -325,10 +332,11 @@ int main(void)
   // sensor initialization
   uint8_t deviceReady;
   deviceReady=checkMPU6050Ready();
-  uint8_t configGood=MPU6050init(&mpu6050,&hi2c1 );
+  uint8_t configGood=MPU6050init(&mpu6050,&hi2c1);
   uint8_t rec;
   HAL_StatusTypeDef stat;
   stat=HAL_I2C_Mem_Read (&hi2c1,MPU6050ADDR,WHO_AM_I_REG,I2C_MEMADD_SIZE_8BIT,&rec,1,100);
+
   Bar30init(&pressureSensor, &hi2c2);
   uint8_t i2cGood=0;
   i2cGood=Bar30reset(&pressureSensor);
@@ -372,20 +380,28 @@ int main(void)
   DefaultTaskHandle = osThreadCreate(osThread(DefaultTask), NULL);
 
   /* definition and creation of LEDscreenTask */
-  osThreadDef(LEDscreenTask, sendDataToScreen, osPriorityNormal, 0, 1024);
+  osThreadDef(LEDscreenTask, sendDataToScreen, osPriorityLow, 0, 512);
   LEDscreenTaskHandle = osThreadCreate(osThread(LEDscreenTask), NULL);
 
   /* definition and creation of controlLoopTask */
-  osThreadDef(controlLoopTask, updateControlLoop, osPriorityHigh, 0, 256);
+  osThreadDef(controlLoopTask, updateControlLoop, osPriorityHigh, 0, 128);
   controlLoopTaskHandle = osThreadCreate(osThread(controlLoopTask), NULL);
 
   /* definition and creation of SDcardTask */
-  osThreadDef(SDcardTask, recordSDdata, osPriorityAboveNormal, 0, 2048);
+  osThreadDef(SDcardTask, recordSDdata, osPriorityNormal, 0, 2048);
   SDcardTaskHandle = osThreadCreate(osThread(SDcardTask), NULL);
 
   /* definition and creation of pressureSensorT */
   osThreadDef(pressureSensorT, getBar30Data, osPriorityNormal, 0, 128);
   pressureSensorTHandle = osThreadCreate(osThread(pressureSensorT), NULL);
+
+  /* definition and creation of KalmanPredict */
+  //osThreadDef(KalmanPredict, EKFpredict, osPriorityNormal, 0, 128);
+//  KalmanPredictHandle = osThreadCreate(osThread(KalmanPredict), NULL);
+
+  /* definition and creation of KalmanUpdate */
+//  osThreadDef(KalmanUpdate, EKFupdate, osPriorityNormal, 0, 128);
+//  KalmanUpdateHandle = osThreadCreate(osThread(KalmanUpdate), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -588,7 +604,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.ClockSpeed = 400000;
   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
@@ -700,7 +716,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 8400-1;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 1000-1;
+  htim2.Init.Period = 2000-1;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -820,7 +836,7 @@ static void MX_TIM8_Init(void)
   htim8.Instance = TIM8;
   htim8.Init.Prescaler = 8400-1;
   htim8.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim8.Init.Period = 1000-1;
+  htim8.Init.Period = 2000-1;
   htim8.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim8.Init.RepetitionCounter = 0;
   htim8.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -1232,82 +1248,37 @@ void recordSDdata(void const * argument)
   for(;;)
   {
 
-	    // Waiting for the Micro SD module to initialize
+//	    // Waiting for the Micro SD module to initialize
 	  	printf("SD card thread is called!");
 
+	  	// Write accelerometer Data
 	  	fres = f_mount(&fs, "", 0);
-//	  	if (fres == FR_OK) {
-//	  		printf("Micro SD card is mounted successfully!\n");
-//	  	} else if (fres != FR_OK) {
-//	  		printf("Micro SD card's mount error!\n");
-//	  	}
-
-	  	// FA_OPEN_APPEND opens file if it exists and if not then creates it,
-	  	// the pointer is set at the end of the file for appending
-	  	fres = f_open(&fil, "accel.txt", FA_OPEN_APPEND | FA_WRITE | FA_READ);
-//	  	if (fres == FR_OK) {
-//	  		printf("File opened for reading and checking the free space.\n");
-//	  	} else if (fres != FR_OK) {
-//	  		printf("File was not opened for reading and checking the free space!\n");
-//	  	}
-
+	  	fres = f_open(&fil, "accelYcali3.csv", FA_OPEN_APPEND | FA_WRITE | FA_READ);
 	  	fres = f_getfree("", &fre_clust, &pfs);
 	  	totalSpace = (uint32_t) ((pfs->n_fatent - 2) * pfs->csize * 0.5);
 	  	freeSpace = (uint32_t) (fre_clust * pfs->csize * 0.5);
 	  	char mSz[12];
 	  	sprintf(mSz, "%lu", freeSpace);
-//	  	if (fres == FR_OK) {
-//	  		printf("The free space is: ");
-//	  		printf(mSz);
-//	  		printf("\n");
-//	  	} else if (fres != FR_OK) {
-//	  		printf("The free space could not be determined!\n");
-//	  	}
-
-//	  	for (uint8_t i = 0; i < 10; i++) {
-//	  		f_puts("NEW BOARD TEST.\n", &fil);
-//	  	}
 	  	char accDataString[50];
 	  	sprintf(accDataString, "ax=%3f, ay=%3f, az=%3f\n", mpu6050.acc_mps2[0],  mpu6050.acc_mps2[1],  mpu6050.acc_mps2[2]);
 	  	f_puts(accDataString, &fil);
-
 	  	fres = f_close(&fil);
-//	  	if (fres == FR_OK) {
-//	  		printf("The file is closed.\n");
-//	  	} else if (fres != FR_OK) {
-//	  		printf("The file was not closed.\n");
-//	  	}
 
-//	  	// Open file to read
-	  	fres = f_open(&fil, "hi.txt", FA_READ);
-//	  	if (fres == FR_OK) {
-//	  		printf("File opened for reading.\n");
-//	  	} else if (fres != FR_OK) {
-//	  		printf("File was not opened for reading!\n");
-//	  	}
+	  	// Write Gyro Data
+	  	fres = f_open(&fil, "gyro.csv", FA_OPEN_APPEND | FA_WRITE | FA_READ);
+	  	fres = f_getfree("", &fre_clust, &pfs);
+		totalSpace = (uint32_t) ((pfs->n_fatent - 2) * pfs->csize * 0.5);
+		freeSpace = (uint32_t) (fre_clust * pfs->csize * 0.5);
+		sprintf(mSz, "%lu", freeSpace);
+		char gyroDataString[50];
+		sprintf(gyroDataString, "gx=%3f, gy=%3f, gz=%3f\n", mpu6050.gyr_rps[0],  mpu6050.gyr_rps[1],  mpu6050.gyr_rps[2]);
+		f_puts(gyroDataString, &fil);
+		fres = f_close(&fil);
+
 //
-//	  	while (f_gets(buffer, sizeof(buffer), &fil)) {
-//	  		char mRd[100];
-//	  		sprintf(mRd, "%s", buffer);
-//	  		printf(mRd);
-//
-//	  	}
-
-//	  	 //Close file
-	  	fres = f_close(&fil);
-//	  	if (fres == FR_OK) {
-//	  		printf("The file is closed.\n");
-//	  	} else if (fres != FR_OK) {
-//	  		printf("The file was not closed.\n");
-//	  	}
-
 	  	f_mount(NULL, "", 1);
-//	  	if (fres == FR_OK) {
-//	  		printf("The Micro SD card is unmounted!\n");
-//	  	} else if (fres != FR_OK) {
-//	  		printf("The Micro SD was not unmounted!");
-//	  	}
-    osDelay(5000); // write SD card data every 5 seconds
+
+    osDelay(2000); // write SD card data every 5 seconds
   }
   /* USER CODE END recordSDdata */
 }
@@ -1331,6 +1302,46 @@ void getBar30Data(void const * argument)
   }
   /* USER CODE END getBar30Data */
 }
+
+/* USER CODE BEGIN Header_EKFpredict */
+/**
+* @brief Function implementing the KalmanPredict thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_EKFpredict */
+//void EKFpredict(void const * argument)
+//{
+//  /* USER CODE BEGIN EKFpredict */
+//  /* Infinite loop */
+//  for(;;)
+//  {
+////	if(mpu6050.gyr_rps[0]!=0.0f && mpu6050.gyr_rps[1]!=0.0f&& mpu6050.gyr_rps[2]!=0.0f)
+////		EKF_Predict(&ekf,mpu6050.gyr_rps[0], mpu6050.gyr_rps[1], mpu6050.gyr_rps[2], (float)KALMAN_PREDICT_PERIOD_MS/1000.0f);
+////    osDelay(KALMAN_PREDICT_PERIOD_MS);
+//  }
+//  /* USER CODE END EKFpredict */
+//}
+
+/* USER CODE BEGIN Header_EKFupdate */
+/**
+* @brief Function implementing the KalmanUpdate thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_EKFupdate */
+//void EKFupdate(void const * argument)
+//{
+//  /* USER CODE BEGIN EKFupdate */
+//  /* Infinite loop */
+//  for(;;)
+// {
+////	if(mpu6050.acc_mps2[0]!=0.0f && mpu6050.acc_mps2[1]!=0.0f&& mpu6050.acc_mps2[2]!=0.0f)
+////		EKF_Update(&ekf,mpu6050.acc_mps2[0], mpu6050.acc_mps2[1], mpu6050.acc_mps2[2]);
+////    osDelay(KALMAN_UPDATE_PERIOD_MS);
+//  }
+//  /* USER CODE END EKFupdate */
+//}
 
 /**
   * @brief  Period elapsed callback in non blocking mode

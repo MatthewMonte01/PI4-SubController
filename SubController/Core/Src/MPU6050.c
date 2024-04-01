@@ -20,10 +20,17 @@ uint8_t MPU6050init(MPU6050* imu, I2C_HandleTypeDef* i2cHandle)
 	imu->i2cHandle=i2cHandle;
 
 	for(int i=0;i<3;i++)
+	{
 		imu->acc_mps2[i]=0;
+		imu->accelOffsets[i]=0;
+	}
+
 
 	for(int i=0;i<3;i++)
+	{
 		imu->gyr_rps[i]=0;
+		imu->gyroOffsets[i]=0;
+	}
 
 	for(int i=0; i<14;i++)
 		imu->rxData[i]=0;
@@ -31,6 +38,9 @@ uint8_t MPU6050init(MPU6050* imu, I2C_HandleTypeDef* i2cHandle)
 	imu->rxFlag=0;
 	imu->dataReadyFlag=0;
 	imu->temp_degC=0;
+	imu->numCalibrationMeas=0;
+
+
 
 	uint8_t numErrors=0;
 	//Disable FSYNC, enable digital LPF ( fs=1kHz, bandwidth: acc=94 Hz, gyr=98Hz )
@@ -73,9 +83,21 @@ void MPU6050convertRawData(MPU6050* imu)
 	//int16_t temperature=(imu->rxData[6]<<8)|imu->rxData[7];
 	int16_t gyr[3]={( (imu->rxData[8]<<8)|imu->rxData[9] ),( (imu->rxData[10]<<8)|imu->rxData[11] ),( (imu->rxData[12]<<8)|imu->rxData[13] )};
 
+	// Before accel calibration
 	imu->acc_mps2[0]=MPU6050_ACC_RAW_TO_MPS2*acc[0];
 	imu->acc_mps2[1]=MPU6050_ACC_RAW_TO_MPS2*acc[1];
 	imu->acc_mps2[2]=MPU6050_ACC_RAW_TO_MPS2*acc[2];
+
+	// After accel calibration
+	imu->accelOffsets[0]=ACCEL_CALI_SLOPE_X*imu->acc_mps2[0]+CALI_INTERCEPT_X; // offset calculated from linear regression
+	imu->acc_mps2[0]=imu->acc_mps2[0]-imu->accelOffsets[0];
+
+	imu->accelOffsets[1]=ACCEL_CALI_SLOPE_Y*imu->acc_mps2[1]+CALI_INTERCEPT_Y; // offset calculated from linear regression
+	imu->acc_mps2[1]=imu->acc_mps2[1]-imu->accelOffsets[1];
+
+	imu->accelOffsets[2]=ACCEL_CALI_SLOPE_Z*imu->acc_mps2[2]+CALI_INTERCEPT_Z; // offset calculated from linear regression
+	imu->acc_mps2[2]=imu->acc_mps2[2]-imu->accelOffsets[2];
+
 
 	imu->gyr_rps[0]=MPU6050_GYR_RAW_TO_RPS*gyr[0];
 	imu->gyr_rps[1]=MPU6050_GYR_RAW_TO_RPS*gyr[1];

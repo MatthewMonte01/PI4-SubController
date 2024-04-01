@@ -29,6 +29,13 @@
 #define MPU6050_ACC_RAW_TO_MPS2 0.00059875482f
 #define MPU6050_GYR_RAW_TO_RPS  0.00013323124f
 
+#define ACCEL_CALI_SLOPE_X 0.007172811f
+#define CALI_INTERCEPT_X  0.538545852f
+#define ACCEL_CALI_SLOPE_Y 0.005398384f
+#define CALI_INTERCEPT_Y  -0.095500155f
+#define ACCEL_CALI_SLOPE_Z 0.002774847f
+#define CALI_INTERCEPT_Z   0.441896957f
+
 #define LPF_ACC_ALPHA 0.50f
 #define LPF_GYR_ALPHA 0.1f
 // structure for MPU6050 data
@@ -51,6 +58,11 @@ typedef struct{
 	// DMA flags
 	volatile uint8_t rxFlag;
 	volatile uint8_t dataReadyFlag;
+
+	// Calibration offsets
+	float gyroOffsets[3];
+	float accelOffsets[3];
+	uint8_t numCalibrationMeas;
 } MPU6050;
 
 uint8_t checkMPU6050Ready();
@@ -58,7 +70,10 @@ uint8_t i2cWriteRegMPU6050(uint16_t devAddr, uint16_t RegAddr, uint8_t* data);
 uint8_t MPU6050init(MPU6050* imu, I2C_HandleTypeDef* i2cHandle);
 uint8_t MPU6050readDataDMA(MPU6050* imu);
 void MPU6050convertRawData(MPU6050* imu);
-void filterRawData(MPU6050* imu);
+void MPU6050filterRawData(MPU6050* imu);
+void MPU6050Calibration(MPU6050* imu);
+void calibrateGyro(MPU6050* imu);
+void calibrateAccel(MPU6050* imu);
 
 
 #endif /* INC_MPU6050_H_ */

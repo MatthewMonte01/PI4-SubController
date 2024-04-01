@@ -20,6 +20,8 @@
 #define READ_PROM_CMD_6              0xAA
 #define READ_PROM_CMD_7              0xAC
 
+# define FLUID_DENSITY               992.72f // fluid density of pool water in Kg/m^3
+
 
 typedef struct
 {

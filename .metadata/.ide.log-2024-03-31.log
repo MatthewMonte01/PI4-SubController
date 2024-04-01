@@ -1,0 +1,25 @@
+2024-04-01 10:28:55,617 [INFO] TasksAndQueuesTab:757 - Dynamic
+2024-04-01 10:28:55,804 [WARN] TasksAndQueuesTab:763 - 128 128
+2024-04-01 10:28:55,804 [WARN] TasksAndQueuesTab:775 - max value is: 3840.0
+2024-04-01 10:28:55,804 [INFO] TasksAndQueuesTab:757 - Dynamic
+2024-04-01 10:28:55,804 [WARN] TasksAndQueuesTab:763 - 512 128
+2024-04-01 10:28:55,805 [WARN] TasksAndQueuesTab:775 - max value is: 3840.0
+2024-04-01 10:28:55,805 [INFO] TasksAndQueuesTab:757 - Dynamic
+2024-04-01 10:28:55,805 [WARN] TasksAndQueuesTab:763 - 128 128
+2024-04-01 10:28:55,805 [WARN] TasksAndQueuesTab:775 - max value is: 3840.0
+2024-04-01 10:28:55,805 [INFO] TasksAndQueuesTab:757 - Dynamic
+2024-04-01 10:28:55,805 [WARN] TasksAndQueuesTab:763 - 2048 128
+2024-04-01 10:28:55,805 [WARN] TasksAndQueuesTab:775 - max value is: 3840.0
+2024-04-01 10:28:55,805 [INFO] TasksAndQueuesTab:757 - Dynamic
+2024-04-01 10:28:55,805 [WARN] TasksAndQueuesTab:763 - 128 128
+2024-04-01 10:28:55,805 [WARN] TasksAndQueuesTab:775 - max value is: 3840.0
+2024-04-01 10:28:55,805 [INFO] TasksAndQueuesTab:757 - Dynamic
+2024-04-01 10:28:55,805 [WARN] TasksAndQueuesTab:763 - 128 128
+2024-04-01 10:28:55,805 [WARN] TasksAndQueuesTab:775 - max value is: 3840.0
+2024-04-01 10:28:55,805 [INFO] TasksAndQueuesTab:757 - Dynamic
+2024-04-01 10:28:55,805 [WARN] TasksAndQueuesTab:763 - 128 128
+2024-04-01 10:28:55,805 [WARN] TasksAndQueuesTab:775 - max value is: 3840.0
+2024-04-01 10:29:01,301 [INFO] EditThreadDialog:704 - RAM SIZE (in KB): 128
+2024-04-01 10:29:01,301 [INFO] EditThreadDialog:706 - RAM SIZE (in words): 32768
+2024-04-01 10:29:09,093 [INFO] EditThreadDialog:704 - RAM SIZE (in KB): 128
+2024-04-01 10:29:09,094 [INFO] EditThreadDialog:706 - RAM SIZE (in words): 32768

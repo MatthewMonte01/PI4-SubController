@@ -1,7 +1,65 @@
-10:09:10 **** Incremental Build of configuration Debug for project Test ****
+10:33:07 **** Incremental Build of configuration Debug for project SubController ****
 make -j6 all 
-arm-none-eabi-size  Test.elf 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:226:37: warning: statement with no effect [-Wunused-value]
+  226 |                         currentState==IDLE_STATE;
+      |                         ~~~~~~~~~~~~^~~~~~~~~~~~
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:337:21: warning: variable 'stat' set but not used [-Wunused-but-set-variable]
+  337 |   HAL_StatusTypeDef stat;
+      |                     ^~~~
+../Core/Src/main.c:335:11: warning: unused variable 'configGood' [-Wunused-variable]
+  335 |   uint8_t configGood=MPU6050init(&mpu6050,&hi2c1);
+      |           ^~~~~~~~~~
+../Core/Src/main.c:333:11: warning: variable 'deviceReady' set but not used [-Wunused-but-set-variable]
+  333 |   uint8_t deviceReady;
+      |           ^~~~~~~~~~~
+../Core/Src/main.c: In function 'getBar30Data':
+../Core/Src/main.c:1297:24: warning: variable 'i2cGood' set but not used [-Wunused-but-set-variable]
+ 1297 |         static uint8_t i2cGood=1;
+      |                        ^~~~~~~
+../Core/Src/main.c: At top level:
+../Core/Src/main.c:124:26: warning: 'txStatus' defined but not used [-Wunused-variable]
+  124 | static HAL_StatusTypeDef txStatus;
+      |                          ^~~~~~~~
+arm-none-eabi-gcc -o "SubController.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SubController.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
+C:/ST/STM32CubeIDE_1.13.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: warning: SubController.elf has a LOAD segment with RWX permissions
+Finished building target: SubController.elf
+ 
+arm-none-eabi-size  SubController.elf 
+arm-none-eabi-objdump -h -S SubController.elf  > "SubController.list"
    text	   data	    bss	    dec	    hex	filename
- 418092	    328	1409348	1827768	 1be3b8	Test.elf
+  91108	    504	  28872	 120484	  1d6a4	SubController.elf
+Finished building: default.size.stdout
+ 
+Finished building: SubController.list
+ 
+10:33:14 **** Incremental Build of configuration Debug for project SubController ****
+make -j6 all 
+arm-none-eabi-size  SubController.elf 
+   text	   data	    bss	    dec	    hex	filename
+  91108	    504	  28872	 120484	  1d6a4	SubController.elf
+Finished building: default.size.stdout
+ 
+10:33:28 **** Incremental Build of configuration Debug for project SubController ****
+make -j6 all 
+arm-none-eabi-size  SubController.elf 
+   text	   data	    bss	    dec	    hex	filename
+  91108	    504	  28872	 120484	  1d6a4	SubController.elf
+Finished building: default.size.stdout
+ 
+10:33:34 **** Incremental Build of configuration Debug for project SubController ****
+make -j6 all 
+arm-none-eabi-size  SubController.elf 
+   text	   data	    bss	    dec	    hex	filename
+  91108	    504	  28872	 120484	  1d6a4	SubController.elf
+Finished building: default.size.stdout
+ 
+10:34:48 **** Incremental Build of configuration Debug for project SubController ****
+make -j6 all 
+arm-none-eabi-size  SubController.elf 
+   text	   data	    bss	    dec	    hex	filename
+  91108	    504	  28872	 120484	  1d6a4	SubController.elf
 Finished building: default.size.stdout
  

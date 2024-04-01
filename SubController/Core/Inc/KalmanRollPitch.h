@@ -8,6 +8,8 @@
 #define KALMAN_P_INIT 0.1f
 #define KALMAN_Q 0.001f
 #define KALMAN_R 0.011f
+#define KALMAN_PREDICT_PERIOD_MS 125
+#define KALMAN_UPDATE_PERIOD_MS 1000
 
 typedef struct {
 
