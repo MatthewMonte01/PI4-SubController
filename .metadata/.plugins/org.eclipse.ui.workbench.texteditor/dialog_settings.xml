@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="printf"/>
+		<item key="selection" value="RxBuffer"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
-			<item value="printf"/>
+			<item value="RxBuffer"/>
+			<item value="buffer"/>
+			<item value="velocity"/>
+			<item value="phi"/>
+			<item value="theta"/>
+			<item value="atanf"/>
 			<item value="ekf"/>
-			<item value="Calibration"/>
-			<item value="EKF"/>
-			<item value="MPU6050"/>
-			<item value="MPU6050init()"/>
-			<item value="Q"/>
-			<item value="fil"/>
-			<item value="&amp;fil"/>
-			<item value="SELECT"/>
-			<item value="Timer1"/>
-			<item value="type"/>
-			<item value="CardType"/>
-			<item value="chilling"/>
-			<item value="transferControlByte"/>
+			<item value="Txbuf"/>
+			<item value="tx"/>
+			<item value="HAL_UART_Transmit"/>
+			<item value="RXNE"/>
+			<item value="Handle"/>
+			<item value="huart"/>
+			<item value="huart6"/>
+			<item value="printf"/>
 		</list>
 		<list key="replacehistory">
+			<item value="RxBuffer"/>
 			<item value=" "/>
 			<item value=""/>
 		</list>

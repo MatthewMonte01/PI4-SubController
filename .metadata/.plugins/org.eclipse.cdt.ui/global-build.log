@@ -1,27 +1,23 @@
-10:33:07 **** Incremental Build of configuration Debug for project SubController ****
+09:49:24 **** Incremental Build of configuration Debug for project SubController ****
 make -j6 all 
 arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../FATFS/Target -I../FATFS/App -I../Middlewares/Third_Party/FatFs/src -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
-../Core/Src/main.c:226:37: warning: statement with no effect [-Wunused-value]
-  226 |                         currentState==IDLE_STATE;
-      |                         ~~~~~~~~~~~~^~~~~~~~~~~~
 ../Core/Src/main.c: In function 'main':
-../Core/Src/main.c:337:21: warning: variable 'stat' set but not used [-Wunused-but-set-variable]
-  337 |   HAL_StatusTypeDef stat;
+../Core/Src/main.c:317:21: warning: variable 'stat' set but not used [-Wunused-but-set-variable]
+  317 |   HAL_StatusTypeDef stat;
       |                     ^~~~
-../Core/Src/main.c:335:11: warning: unused variable 'configGood' [-Wunused-variable]
-  335 |   uint8_t configGood=MPU6050init(&mpu6050,&hi2c1);
+../Core/Src/main.c:315:11: warning: unused variable 'configGood' [-Wunused-variable]
+  315 |   uint8_t configGood=MPU6050init(&mpu6050,&hi2c1);
       |           ^~~~~~~~~~
-../Core/Src/main.c:333:11: warning: variable 'deviceReady' set but not used [-Wunused-but-set-variable]
-  333 |   uint8_t deviceReady;
+../Core/Src/main.c:313:11: warning: variable 'deviceReady' set but not used [-Wunused-but-set-variable]
+  313 |   uint8_t deviceReady;
       |           ^~~~~~~~~~~
 ../Core/Src/main.c: In function 'getBar30Data':
-../Core/Src/main.c:1297:24: warning: variable 'i2cGood' set but not used [-Wunused-but-set-variable]
- 1297 |         static uint8_t i2cGood=1;
+../Core/Src/main.c:1294:24: warning: variable 'i2cGood' set but not used [-Wunused-but-set-variable]
+ 1294 |         static uint8_t i2cGood=1;
       |                        ^~~~~~~
 ../Core/Src/main.c: At top level:
-../Core/Src/main.c:124:26: warning: 'txStatus' defined but not used [-Wunused-variable]
-  124 | static HAL_StatusTypeDef txStatus;
+../Core/Src/main.c:131:26: warning: 'txStatus' defined but not used [-Wunused-variable]
+  131 | static HAL_StatusTypeDef txStatus;
       |                          ^~~~~~~~
 arm-none-eabi-gcc -o "SubController.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SubController\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SubController.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 C:/ST/STM32CubeIDE_1.13.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: warning: SubController.elf has a LOAD segment with RWX permissions
@@ -30,36 +26,36 @@ Finished building target: SubController.elf
 arm-none-eabi-size  SubController.elf 
 arm-none-eabi-objdump -h -S SubController.elf  > "SubController.list"
    text	   data	    bss	    dec	    hex	filename
-  91108	    504	  28872	 120484	  1d6a4	SubController.elf
+  97184	    504	  28952	 126640	  1eeb0	SubController.elf
 Finished building: default.size.stdout
  
 Finished building: SubController.list
  
-10:33:14 **** Incremental Build of configuration Debug for project SubController ****
+09:49:43 **** Incremental Build of configuration Debug for project SubController ****
 make -j6 all 
 arm-none-eabi-size  SubController.elf 
    text	   data	    bss	    dec	    hex	filename
-  91108	    504	  28872	 120484	  1d6a4	SubController.elf
+  97184	    504	  28952	 126640	  1eeb0	SubController.elf
 Finished building: default.size.stdout
  
-10:33:28 **** Incremental Build of configuration Debug for project SubController ****
+09:50:30 **** Incremental Build of configuration Debug for project UART_NUCLEO ****
 make -j6 all 
-arm-none-eabi-size  SubController.elf 
+arm-none-eabi-size  UART_NUCLEO.elf 
    text	   data	    bss	    dec	    hex	filename
-  91108	    504	  28872	 120484	  1d6a4	SubController.elf
+  14440	     16	   1936	  16392	   4008	UART_NUCLEO.elf
 Finished building: default.size.stdout
  
-10:33:34 **** Incremental Build of configuration Debug for project SubController ****
+09:51:47 **** Incremental Build of configuration Debug for project UART_NUCLEO ****
 make -j6 all 
-arm-none-eabi-size  SubController.elf 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc -o "UART_NUCLEO.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\UART_NUCLEO\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="UART_NUCLEO.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: UART_NUCLEO.elf
+ 
+arm-none-eabi-size  UART_NUCLEO.elf 
+arm-none-eabi-objdump -h -S UART_NUCLEO.elf  > "UART_NUCLEO.list"
    text	   data	    bss	    dec	    hex	filename
-  91108	    504	  28872	 120484	  1d6a4	SubController.elf
+  14896	     16	   1952	  16864	   41e0	UART_NUCLEO.elf
 Finished building: default.size.stdout
  
-10:34:48 **** Incremental Build of configuration Debug for project SubController ****
-make -j6 all 
-arm-none-eabi-size  SubController.elf 
-   text	   data	    bss	    dec	    hex	filename
-  91108	    504	  28872	 120484	  1d6a4	SubController.elf
-Finished building: default.size.stdout
+Finished building: UART_NUCLEO.list
  

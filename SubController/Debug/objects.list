@@ -1,6 +1,7 @@
 "./Core/Src/Bar30.o"
 "./Core/Src/KalmanRollPitch.o"
 "./Core/Src/MPU6050.o"
+"./Core/Src/attitudeEstimation.o"
 "./Core/Src/fatfs_sd.o"
 "./Core/Src/freertos.o"
 "./Core/Src/main.o"

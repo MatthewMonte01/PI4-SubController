@@ -1,0 +1,88 @@
+2024-04-02 08:22:57,983 [INFO] MainUpdater:2873 - connection check result : 10
+2024-04-02 08:22:58,443 [INFO] McuFinderGlobals:76 - Set McuFinderConnectedMode to true
+2024-04-02 08:22:58,486 [INFO] MultiScanPanel:200 - Auto-refresh data requested => check proxy status ongoing
+2024-04-02 08:22:58,493 [INFO] FinderPluginLoader:95 - Searching for filters in installed packs
+2024-04-02 08:23:00,207 [INFO] LoadUrlFilesThread:185 - End of LoadServerUrlFiles without Thread
+2024-04-02 08:23:00,208 [INFO] DetailPanel:341 - Set advertising image to C:/Users/bozo2/STM32Cube/Repository/\en.prom-stm32wl3-mcu-finder.jpg
+2024-04-02 08:23:11,067 [INFO] MultiScanPanel:200 - Auto-refresh data requested => check proxy status ongoing
+2024-04-02 08:23:11,163 [INFO] LoadUrlFilesThread:185 - End of LoadServerUrlFiles without Thread
+2024-04-02 08:23:11,164 [INFO] DetailPanel:341 - Set advertising image to C:/Users/bozo2/STM32Cube/Repository/\en.prom-stm32wl3-mcu-finder.jpg
+2024-04-02 08:23:11,208 [INFO] MultiScanPanel:200 - Auto-refresh data requested => check proxy status ongoing
+2024-04-02 08:23:11,231 [INFO] ApiDb:581 - Connected to CubeFinder SQLite database (C:\Users\bozo2\.stmcufinder\plugins\mcufinder\mcu\cube-finder-db.db)
+2024-04-02 08:23:11,351 [INFO] ApiDb:668 - CubeFinder database Data Model version=2.1
+2024-04-02 08:23:11,351 [INFO] ApiDb:669 - CubeFinder database Configuration version=3.0.39
+2024-04-02 08:23:11,352 [INFO] ApiDb:670 - CubeFinder database generation date=2024-03-25 (1711369621)
+2024-04-02 08:23:11,353 [INFO] ApiDb:671 - CubeFinder database FW Pack versions=[FP-ATR-ASTRA1_V2.0.0, FP-SNS-FLIGHT1_V5.0.1, FP-SNS-FLIGHT1_V5.0.2, FP-SNS-MOTENV1_V4.3.1, FP-SNS-MOTENV1_V4.3.2, FP-SNS-MOTENVWB1_V1.3.1, FP-SNS-SMARTAG2_V1.2.0, STM32Cube_FW_C0_V1.1.0, STM32Cube_FW_F4_V1.28.0, STM32Cube_FW_F7_V1.17.0, STM32Cube_FW_G0_V1.6.2, STM32Cube_FW_G4_V1.5.2, STM32Cube_FW_H5_V0.5.1, STM32Cube_FW_H5_V1.1.1, STM32Cube_FW_H5_V1.2.0, STM32Cube_FW_H5_V1.2.0RC4, STM32Cube_FW_H7RS_V1.0.0, STM32Cube_FW_H7RS_V1.0.0RC4, STM32Cube_FW_H7_V1.11.0, STM32Cube_FW_L0_V1.12.2, STM32Cube_FW_L5_V1.5.1, STM32Cube_FW_U0_V1.0.0, STM32Cube_FW_U0_V1.0.0RC1, STM32Cube_FW_U5_V1.3.0RC4, STM32Cube_FW_U5_V1.5.0, STM32Cube_FW_U5_V1.5.0RC1, STM32Cube_FW_WBA_V1.0.0RC1, STM32Cube_FW_WBA_V1.2.0, STM32Cube_FW_WBA_V1.2.0RC2, STM32Cube_FW_WBA_V1.3.0, STM32Cube_FW_WBA_V1.3.0RC1, STM32Cube_FW_WB_V1.15.0RC1, STM32Cube_FW_WB_V1.16.0, STM32Cube_FW_WB_V1.16.0RC2, STM32Cube_FW_WB_V1.18.0, STM32Cube_FW_WB_V1.19.0, STM32Cube_FW_WL_V1.3.0, X-CUBE-ALGOBUILD_V1.3.0, X-CUBE-ALS_V1.0.1, X-CUBE-AZRTOS-F4_V1.1.0, X-CUBE-AZRTOS-F7_V1.1.0, X-CUBE-AZRTOS-G0_V1.1.0, X-CUBE-AZRTOS-G4_V2.0.0, X-CUBE-AZRTOS-H7_V3.2.0, X-CUBE-AZRTOS-L4_V1.0.0, X-CUBE-AZRTOS-L4_V2.0.0, X-CUBE-AZRTOS-L5_V1.1.0, X-CUBE-AZRTOS-WB_V2.0.0, X-CUBE-AZRTOS-WL_V2.0.0, X-CUBE-BLE1_V7.0.0, X-CUBE-BLE2_V3.3.0, X-CUBE-BLEMGR_V3.1.0, X-CUBE-EEPRMA1_V4.1.0, X-CUBE-EEPRMA1_V5.1.0, X-CUBE-FREERTOS_V1.1.0, X-CUBE-GNSS1_V6.0.0, X-CUBE-MEMS1_V10.0.0, X-CUBE-MEMS1_V9.1.0, X-CUBE-MEMS1_V9.4.0, X-CUBE-MEMS1_V9.6.0, X-CUBE-NFC4_V3.0.0, X-CUBE-NFC7_V1.0.1, X-CUBE-SFXS2LP1_V4.0.0, X-CUBE-SUBG2_V5.0.0, X-CUBE-TOF1_V3.4.0]
+2024-04-02 08:23:12,366 [ERROR] DbExamplesSqlite:437 - Missing JSON key: board_cpn
+2024-04-02 08:23:12,366 [ERROR] DbExamplesSqlite:437 - Missing JSON key: board_cpn
+2024-04-02 08:23:12,366 [ERROR] DbExamplesSqlite:437 - Missing JSON key: board_cpn
+2024-04-02 08:23:12,366 [ERROR] DbExamplesSqlite:437 - Missing JSON key: board_cpn
+2024-04-02 08:23:12,471 [INFO] DbExamplesSqlite:395 - Ignored 60 examples not supported by CubeIDE
+2024-04-02 08:23:12,471 [INFO] DbExamplesSqlite:396 - Found 8152 examples active
+2024-04-02 08:23:12,471 [INFO] DbExamplesSqlite:397 - Found 871 examples obsolete
+2024-04-02 08:23:12,471 [INFO] DbExamplesSqlite:398 - Found 0 examples under development
+2024-04-02 08:23:12,471 [INFO] DbExamplesSqlite:399 - Found 10 examples not building
+2024-04-02 08:23:12,472 [INFO] DbExamples:125 - Found 8102 examples
+2024-04-02 08:23:12,485 [ERROR] DbExamples:208 - Found 48 examples with invalid data (board or MCU)
+2024-04-02 08:23:12,486 [INFO] DbExamples:222 - Found 101 boards with related examples
+2024-04-02 08:23:12,490 [INFO] DbExamples:235 - Found 85 MCUs with related examples
+2024-04-02 08:23:12,508 [INFO] ApiDb:423 - Load user favorites file C:\Users\bozo2/.stm32cubeide/favorites.examples.txt: 0 item(s)
+2024-04-02 08:23:12,508 [INFO] ApiDb:427 - User favorites Examples=[]
+2024-04-02 08:23:12,509 [INFO] DbExamples:250 - Set 0 / 0 favorites Examples
+2024-04-02 08:23:14,386 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'FP-ATR-ASTRA1_V2.0.0'
+2024-04-02 08:23:14,387 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'FP-SNS-FLIGHT1_V5.0.2'
+2024-04-02 08:23:14,387 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'FP-SNS-MOTENV1_V4.3.2'
+2024-04-02 08:23:14,387 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'FP-SNS-MOTENVWB1_V1.3.1'
+2024-04-02 08:23:14,388 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'FP-SNS-SMARTAG2_V1.2.0'
+2024-04-02 08:23:14,499 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_C0_V1.1.0'
+2024-04-02 08:23:14,508 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_F4_V1.28.0'
+2024-04-02 08:23:14,516 [INFO] SoftwarePacks:131 - Found SW pack 'STM32Cube_FW_F7_V1.17.0' up-to-date on disk.
+2024-04-02 08:23:14,524 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_G0_V1.6.2'
+2024-04-02 08:23:14,534 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_G4_V1.5.2'
+2024-04-02 08:23:14,546 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_H5_V1.2.0'
+2024-04-02 08:23:14,554 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_H7RS_V1.0.0'
+2024-04-02 08:23:14,564 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_H7_V1.11.0'
+2024-04-02 08:23:14,575 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_L0_V1.12.2'
+2024-04-02 08:23:14,585 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_L5_V1.5.1'
+2024-04-02 08:23:14,594 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_U0_V1.0.0'
+2024-04-02 08:23:14,603 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_U5_V1.5.0'
+2024-04-02 08:23:14,613 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_WBA_V1.3.0'
+2024-04-02 08:23:14,620 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_WB_V1.19.0'
+2024-04-02 08:23:14,631 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'STM32Cube_FW_WL_V1.3.0'
+2024-04-02 08:23:14,632 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-ALGOBUILD_V1.3.0'
+2024-04-02 08:23:14,632 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-ALS_V1.0.1'
+2024-04-02 08:23:14,632 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-AZRTOS-F4_V1.1.0'
+2024-04-02 08:23:14,632 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-AZRTOS-F7_V1.1.0'
+2024-04-02 08:23:14,632 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-AZRTOS-G0_V1.1.0'
+2024-04-02 08:23:14,632 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-AZRTOS-G4_V2.0.0'
+2024-04-02 08:23:14,632 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-AZRTOS-H7_V3.2.0'
+2024-04-02 08:23:14,632 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-AZRTOS-L4_V2.0.0'
+2024-04-02 08:23:14,632 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-AZRTOS-L5_V1.1.0'
+2024-04-02 08:23:14,632 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-AZRTOS-WB_V2.0.0'
+2024-04-02 08:23:14,632 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-AZRTOS-WL_V2.0.0'
+2024-04-02 08:23:14,633 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-BLE1_V7.0.0'
+2024-04-02 08:23:14,633 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-BLE2_V3.3.0'
+2024-04-02 08:23:14,633 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-BLEMGR_V3.1.0'
+2024-04-02 08:23:14,633 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-EEPRMA1_V5.1.0'
+2024-04-02 08:23:14,633 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-FREERTOS_V1.1.0'
+2024-04-02 08:23:14,633 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-GNSS1_V6.0.0'
+2024-04-02 08:23:14,633 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-MEMS1_V10.0.0'
+2024-04-02 08:23:14,633 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-NFC4_V3.0.0'
+2024-04-02 08:23:14,633 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-NFC7_V1.0.1'
+2024-04-02 08:23:14,633 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-SFXS2LP1_V4.0.0'
+2024-04-02 08:23:14,634 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-SUBG2_V5.0.0'
+2024-04-02 08:23:14,634 [INFO] SoftwarePacks:127 - Download is needed for SW pack 'X-CUBE-TOF1_V3.4.0'
+2024-04-02 08:23:16,430 [INFO] LoadUrlFilesThread:185 - End of LoadServerUrlFiles without Thread
+2024-04-02 08:23:16,432 [INFO] DetailPanel:341 - Set advertising image to C:/Users/bozo2/STM32Cube/Repository/\en.prom-stm32wl3-mcu-finder.jpg
+2024-04-02 08:24:11,830 [INFO] ExampleToolKit:668 - [info] 2024/04/02 08:24:11
+2024-04-02 08:24:11,832 [INFO] ExampleToolKit:716 - [info] Start Project: I2C_TwoBoards_ComIT
+2024-04-02 08:24:11,838 [WARN] ExampleToolKit:778 - [WARNING] IDE PROJECT 'STM32CubeIDE' NOT FOUND
+2024-04-02 08:24:11,839 [INFO] ExampleToolKit:810 - [info] Project path: C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\I2C_TwoBoards_ComIT
+2024-04-02 08:24:12,120 [WARN] ExampleToolKit:2148 - [WARNING] IDE PROJECT 'STM32CubeIDE'NOT FOUND
+2024-04-02 08:24:12,143 [INFO] ExampleToolKit:1063 - [info] SW Package located in: C:\Users\bozo2\STM32Cube\Repository\STM32Cube_FW_F7_V1.17.0
+2024-04-02 08:24:12,144 [INFO] ExampleToolKit:1068 - [info] SW Package copy: LITE
+2024-04-02 08:24:18,337 [WARN] ExampleToolKit:2851 - SW4STM32: Mismatch example name vs IDE example name
+2024-04-02 08:24:18,337 [WARN] ExampleToolKit:2857 - SW4STM32: Rename IDE example name from: STM32746G_DISCOVERY to: I2C_TwoBoards_ComIT
+2024-04-02 08:24:18,351 [INFO] ExampleToolKit:882 - [info] Project 'I2C_TwoBoards_ComIT' installed successfully
+2024-04-02 08:24:18,352 [INFO] ExampleToolKit:908 - [info] 2024/04/02 08:24:18
+2024-04-02 08:24:18,352 [INFO] ExampleToolKit:1027 - [info] Elapsed time: 0h 0m 6s 526ms

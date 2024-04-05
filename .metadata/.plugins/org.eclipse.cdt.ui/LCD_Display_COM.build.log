@@ -1,10 +1,21 @@
-19:29:51 **** Incremental Build of configuration Debug for project LCD_Display_COM ****
+20:55:00 **** Incremental Build of configuration Debug for project LCD_Display_COM ****
 make -j6 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m7 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F746xx -c -I../Core/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc -I../Drivers/STM32F7xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F7xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c:50:16: warning: 'ackbyte' defined but not used [-Wunused-variable]
+   50 | static uint8_t ackbyte=0x00;
+      |                ^~~~~~~
+arm-none-eabi-gcc -o "LCD_Display_COM.elf" @"objects.list"   -mcpu=cortex-m7 -T"C:\Users\bozo2\Desktop\PI4\STM32F7_Display\LCD_Display_COM\STM32F746NGHX_FLASH.ld" --specs=nosys.specs -Wl,-Map="LCD_Display_COM.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+C:/ST/STM32CubeIDE_1.13.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: warning: LCD_Display_COM.elf has a LOAD segment with RWX permissions
+Finished building target: LCD_Display_COM.elf
+ 
 arm-none-eabi-size  LCD_Display_COM.elf 
+arm-none-eabi-objdump -h -S LCD_Display_COM.elf  > "LCD_Display_COM.list"
    text	   data	    bss	    dec	    hex	filename
-  36696	     24	   3432	  40152	   9cd8	LCD_Display_COM.elf
+  16508	     20	   1972	  18500	   4844	LCD_Display_COM.elf
 Finished building: default.size.stdout
  
+Finished building: LCD_Display_COM.list
+ 
 
-19:29:51 Build Finished. 0 errors, 0 warnings. (took 356ms)
+20:55:03 Build Finished. 0 errors, 2 warnings. (took 3s.566ms)
 

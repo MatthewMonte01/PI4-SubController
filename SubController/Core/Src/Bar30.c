@@ -178,7 +178,8 @@ void calculatePressure(Bar30* sensor)
 }
 float calculateDepth(Bar30* sensor)
 {
-	return (sensor->actualPressure-1013.0f)/(FLUID_DENSITY*9.80665f);
+	sensor->depth=(sensor->actualPressure-1013.0f)/(FLUID_DENSITY*9.80665f);
+	return sensor->depth;
 }
 
 

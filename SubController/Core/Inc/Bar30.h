@@ -34,6 +34,7 @@ typedef struct
 	uint8_t rxFlag;
 	uint8_t conversionCompleteFlag;
 	int32_t dT;
+	float depth;
 } Bar30;
 
 uint8_t Bar30reset(Bar30* sensor);

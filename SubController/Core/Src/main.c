@@ -43,6 +43,7 @@
 /* USER CODE BEGIN PD */
 
 // SD card variables
+uint8_t firstWrite=1;
 SPI_HandleTypeDef hspi2;
 FATFS fs;
 FATFS *pfs;
@@ -52,11 +53,23 @@ DWORD fre_clust;
 uint32_t totalSpace, freeSpace;
 char buffer[100];
 
+// Tx buffer for screen
+uint8_t Txbuf[25];
+
+// velocity,roll and pitch
+float velocity=0.0f;
+float phiHat_rad=0.0f;
+float thetaHat_rad = 0.0f;
+float phiHat_deg=0.0f;
+float thetaHat_deg = 0.0f;
+
 
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
+#define RAD_TO_DEG 57.2957795131f;
+
 
 /* USER CODE END PM */
 
@@ -79,6 +92,7 @@ TIM_HandleTypeDef htim8;
 
 UART_HandleTypeDef huart2;
 UART_HandleTypeDef huart3;
+DMA_HandleTypeDef hdma_usart2_tx;
 DMA_HandleTypeDef hdma_usart3_rx;
 DMA_HandleTypeDef hdma_usart3_tx;
 
@@ -88,16 +102,12 @@ osThreadId controlLoopTaskHandle;
 osThreadId SDcardTaskHandle;
 osThreadId pressureSensorTHandle;
 osThreadId KalmanPredictHandle;
-osThreadId KalmanUpdateHandle;
-osMessageQId senderHandle;
-osMessageQId receiverHandle;
 /* USER CODE BEGIN PV */
 
 Joystick joystick;
 uint32_t adc1Data;
 uint32_t adc2Data;
 
-EKF ekf;
 MPU6050 mpu6050;
 Bar30 pressureSensor;
 
@@ -117,13 +127,8 @@ float yawSpeed;
 
 
 // screen buffers and states
-uint8_t uartRxBuffer[8];
-uint8_t uartTxBuffer[8];
-uint8_t* txbufptr=&uartTxBuffer[0];
-uint8_t transferControlByte=0x00;
-static HAL_StatusTypeDef txStatus;
 
-State currentState=IDLE_STATE;
+static HAL_StatusTypeDef txStatus;
 
 
 
@@ -150,7 +155,6 @@ void updateControlLoop(void const * argument);
 void recordSDdata(void const * argument);
 void getBar30Data(void const * argument);
 void EKFpredict(void const * argument);
-void EKFupdate(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -213,24 +217,6 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	if (huart->Instance==USART3)
-	{
-		if(currentState==IDLE_STATE)
-		{
-			if(transferControlByte==0xFF)
-				currentState=SEND_ACK_STATE;
-		}
-
-		else if(currentState==SENDING_DATA_STATE)
-		{
-			currentState==IDLE_STATE;
-		}
-		else
-			return;
-	}
-	transferControlByte=0x00;
-
-
 
 
 }
@@ -313,11 +299,6 @@ int main(void)
   htim3.Instance->CCR3=SERVO_CENTER_PWM;
   htim3.Instance->CCR4=SERVO_CENTER_PWM;
 
-  // EKF initialisation
-  float KalmanQ[2]={KALMAN_Q,KALMAN_Q};
-  float KalmanR[3]={KALMAN_R,KALMAN_R,KALMAN_R};
-  float KalmanP=KALMAN_P_INIT;
-  EKF_Init(&ekf,KalmanP,KalmanQ,KalmanR);
 
 
   // Start DMA streams
@@ -326,7 +307,6 @@ int main(void)
   HAL_ADC_Start_DMA(&hadc2,&adc2Data,1);
   HAL_TIM_Base_Start(&htim2);
   HAL_TIM_Base_Start(&htim8);
-  HAL_UART_Receive_DMA(&huart3,uartRxBuffer,8);
 
 
   // sensor initialization
@@ -345,7 +325,6 @@ int main(void)
   printf("Calibration phase result : %i\r\n",i2cGood );
   i2cGood=Bar30CRCcheck(pressureSensor.calibrationResult);
 
-  HAL_UART_Receive_DMA(&huart3,&transferControlByte,1);
 
   /* USER CODE END 2 */
 
@@ -361,15 +340,6 @@ int main(void)
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
 
-  /* Create the queue(s) */
-  /* definition and creation of sender */
-  osMessageQDef(sender, 32, uint16_t);
-  senderHandle = osMessageCreate(osMessageQ(sender), NULL);
-
-  /* definition and creation of receiver */
-  osMessageQDef(receiver, 16, uint16_t);
-  receiverHandle = osMessageCreate(osMessageQ(receiver), NULL);
-
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
@@ -380,7 +350,7 @@ int main(void)
   DefaultTaskHandle = osThreadCreate(osThread(DefaultTask), NULL);
 
   /* definition and creation of LEDscreenTask */
-  osThreadDef(LEDscreenTask, sendDataToScreen, osPriorityLow, 0, 512);
+  osThreadDef(LEDscreenTask, sendDataToScreen, osPriorityNormal, 0, 512);
   LEDscreenTaskHandle = osThreadCreate(osThread(LEDscreenTask), NULL);
 
   /* definition and creation of controlLoopTask */
@@ -396,12 +366,8 @@ int main(void)
   pressureSensorTHandle = osThreadCreate(osThread(pressureSensorT), NULL);
 
   /* definition and creation of KalmanPredict */
-  //osThreadDef(KalmanPredict, EKFpredict, osPriorityNormal, 0, 128);
-//  KalmanPredictHandle = osThreadCreate(osThread(KalmanPredict), NULL);
-
-  /* definition and creation of KalmanUpdate */
-//  osThreadDef(KalmanUpdate, EKFupdate, osPriorityNormal, 0, 128);
-//  KalmanUpdateHandle = osThreadCreate(osThread(KalmanUpdate), NULL);
+  osThreadDef(KalmanPredict, EKFpredict, osPriorityNormal, 0, 128);
+  KalmanPredictHandle = osThreadCreate(osThread(KalmanPredict), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -422,15 +388,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  //readJoystick(&joystick);
-
-	  //sendDataToScreen();
-	  //uartReceiveFlag=0;
-//	  i2cGood=Bar30getData(&pressureSensor);
-//
-//	  HAL_Delay(10);
-//	  printf("Data Conversion Result : %i\r\n",i2cGood );
-//	  printf("Ambient presure in mbar is: %.2f\r\n",(float)(pressureSensor.actualPressure)/100.0f);
 
 
 
@@ -994,6 +951,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream3_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream3_IRQn);
+  /* DMA1_Stream6_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream6_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream6_IRQn);
   /* DMA1_Stream7_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream7_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream7_IRQn);
@@ -1133,39 +1093,56 @@ void sendDataToScreen(void const * argument)
 {
   /* USER CODE BEGIN sendDataToScreen */
 
-
+	static const uint8_t NUM_BYTES=4;
+	static const uint8_t TOTAL_BYTES=25;
 
 
   /* Infinite loop */
   for(;;)
   {
-//	  switch(currentState){
-//		  case IDLE_STATE:
-//			  // request byte is received in background via cicular DMA
-//			  break;
-//
-//		  case SEND_ACK_STATE:
-//			  uint8_t ackByte=0x10;
-//			  HAL_UART_Transmit(&huart3,&ackByte,1,100);
-//			  break;
-//
-//
-//		  case SENDING_DATA_STATE:
-//			  uartTxBuffer[0]=0xAA;
-//			  uartTxBuffer[1]=0xBB;
-//			  uartTxBuffer[2]=0xCC;
-//			  uartTxBuffer[3]=0xDD;
-//			  uartTxBuffer[4]=0xEE;
-//			  uartTxBuffer[5]=0xFF;
-//			  uartTxBuffer[6]=0x00;
-//			  uartTxBuffer[7]=0x01;
-//			  txStatus=HAL_UART_Transmit(&huart3,txbufptr,8,10);
-//			  break;
-//
-//	  }
+
+	 uint32_t depth_as_uint = *((uint32_t*)&pressureSensor.depth);
+	 uint8_t depthBytes[4];
+	 uint32_t roll_as_uint=*((uint32_t*)&phiHat_deg);
+	 uint8_t rollBytes[4];
+	 uint32_t pitch_as_uint=*((uint32_t*)&thetaHat_deg);
+	 uint8_t pitchBytes[4];
+	 uint32_t velocity_as_uint=*((uint32_t*)&velocity);
+	 uint8_t velocityBytes[4];
+	 uint32_t yaw_as_uint=*((uint32_t*)&mpu6050.gyr_rps[2]);
+	 uint8_t yawBytes[4];
+
+	 for(int i=0;i<NUM_BYTES;i++)
+	 {
+		 depthBytes[i]=(depth_as_uint>>(8*i))&0xFF;  // Low Byte -> High Byte
+		 rollBytes[i]=(roll_as_uint>>(8*i))&0xFF;
+		 pitchBytes[i]=(pitch_as_uint>>(8*i))&0xFF;
+		 velocityBytes[i]=(velocity_as_uint>>(8*i))&0xFF;
+		 yawBytes[i]=(yaw_as_uint>>(8*i))&0xFF;
+	 }
+	 Txbuf[0]='D';
+	 for(int i=1;i<5;i++)
+		 Txbuf[i]=depthBytes[i-1];
+	 Txbuf[5]='R';
+	 for(int i=6;i<10;i++)
+		 Txbuf[i]=rollBytes[i-6];
+	 Txbuf[10]='P';
+	 for(int i=11;i<15;i++)
+		 Txbuf[i]=pitchBytes[i-11];
+	 Txbuf[15]='V';
+	 for(int i=16;i<20;i++)
+		 Txbuf[i]=velocityBytes[i-16];
+	 Txbuf[20]='Y';
+	 for(int i=21;i<25;i++)
+		 Txbuf[i]=yawBytes[i-21];
 
 
-	  osDelay(50000); //
+	 HAL_UART_Transmit_DMA(&huart2,Txbuf,TOTAL_BYTES); // attention: Data is sent LSB first
+
+
+
+
+	  osDelay(900); // Screen should update roughly every 1 second
   }
 
 
@@ -1247,38 +1224,58 @@ void recordSDdata(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-
-//	    // Waiting for the Micro SD module to initialize
-	  	printf("SD card thread is called!");
-
+		fres = f_mount(&fs, "", 0);
 	  	// Write accelerometer Data
 	  	fres = f_mount(&fs, "", 0);
-	  	fres = f_open(&fil, "accelYcali3.csv", FA_OPEN_APPEND | FA_WRITE | FA_READ);
+	  	fres = f_open(&fil, "accel.csv", FA_OPEN_APPEND | FA_WRITE | FA_READ);
 	  	fres = f_getfree("", &fre_clust, &pfs);
-	  	totalSpace = (uint32_t) ((pfs->n_fatent - 2) * pfs->csize * 0.5);
-	  	freeSpace = (uint32_t) (fre_clust * pfs->csize * 0.5);
-	  	char mSz[12];
-	  	sprintf(mSz, "%lu", freeSpace);
+	  	char header[50];
+	  	sprintf(header,"NEW SET OF ACC. DATA (m/s^2)\n");
 	  	char accDataString[50];
 	  	sprintf(accDataString, "ax=%3f, ay=%3f, az=%3f\n", mpu6050.acc_mps2[0],  mpu6050.acc_mps2[1],  mpu6050.acc_mps2[2]);
+	  	if (firstWrite==1)
+	  		f_puts(header,&fil);
 	  	f_puts(accDataString, &fil);
 	  	fres = f_close(&fil);
 
 	  	// Write Gyro Data
 	  	fres = f_open(&fil, "gyro.csv", FA_OPEN_APPEND | FA_WRITE | FA_READ);
 	  	fres = f_getfree("", &fre_clust, &pfs);
-		totalSpace = (uint32_t) ((pfs->n_fatent - 2) * pfs->csize * 0.5);
-		freeSpace = (uint32_t) (fre_clust * pfs->csize * 0.5);
-		sprintf(mSz, "%lu", freeSpace);
+		sprintf(header,"NEW SET OF GYRO DATA (m/s)\n");
 		char gyroDataString[50];
+		if (firstWrite==1)
+			f_puts(header,&fil);
 		sprintf(gyroDataString, "gx=%3f, gy=%3f, gz=%3f\n", mpu6050.gyr_rps[0],  mpu6050.gyr_rps[1],  mpu6050.gyr_rps[2]);
 		f_puts(gyroDataString, &fil);
 		fres = f_close(&fil);
 
+		// Write Bar30  data
+		fres = f_open(&fil, "Bar30.csv", FA_OPEN_APPEND | FA_WRITE | FA_READ);
+		fres = f_getfree("", &fre_clust, &pfs);
+		sprintf(header,"NEW SET OF BAR30 DEPTH DATA (m)\n");
+		char Bar30DataString[20];
+		if (firstWrite==1)
+			f_puts(header,&fil);
+		sprintf(Bar30DataString, "Depth=%2f\n",pressureSensor.depth);
+		f_puts(Bar30DataString, &fil);
+		fres = f_close(&fil);
+
+		// Write roll pitch data
+		fres = f_open(&fil, "RP.csv", FA_OPEN_APPEND | FA_WRITE | FA_READ);
+		fres = f_getfree("", &fre_clust, &pfs);
+		sprintf(header,"NEW SET OF ROLL PITCH DATA (deg)\n");
+		char RPDataString[40];
+		if (firstWrite==1)
+			f_puts(header,&fil);
+		sprintf(RPDataString, "Roll=%3f Pitch=%3f\n",phiHat_deg,thetaHat_deg);
+		f_puts(RPDataString, &fil);
+		fres = f_close(&fil);
+
 //
 	  	f_mount(NULL, "", 1);
+	  	firstWrite=0;
 
-    osDelay(2000); // write SD card data every 5 seconds
+    osDelay(2000); // write SD card data every 2 seconds
   }
   /* USER CODE END recordSDdata */
 }
@@ -1310,38 +1307,58 @@ void getBar30Data(void const * argument)
 * @retval None
 */
 /* USER CODE END Header_EKFpredict */
-//void EKFpredict(void const * argument)
-//{
-//  /* USER CODE BEGIN EKFpredict */
+void EKFpredict(void const * argument)
+{
+  /* USER CODE BEGIN EKFpredict */
 //  /* Infinite loop */
-//  for(;;)
-//  {
-////	if(mpu6050.gyr_rps[0]!=0.0f && mpu6050.gyr_rps[1]!=0.0f&& mpu6050.gyr_rps[2]!=0.0f)
-////		EKF_Predict(&ekf,mpu6050.gyr_rps[0], mpu6050.gyr_rps[1], mpu6050.gyr_rps[2], (float)KALMAN_PREDICT_PERIOD_MS/1000.0f);
-////    osDelay(KALMAN_PREDICT_PERIOD_MS);
-//  }
-//  /* USER CODE END EKFpredict */
-//}
+ for(;;)
+  {
+//	if(mpu6050.gyr_rps[0]!=0.0f && mpu6050.gyr_rps[1]!=0.0f&& mpu6050.gyr_rps[2]!=0.0f)
+//		EKF_Predict(&ekf,mpu6050.gyr_rps[0], mpu6050.gyr_rps[1], mpu6050.gyr_rps[2], (float)KALMAN_PREDICT_PERIOD_MS/1000.0f);
+//    osDelay(KALMAN_PREDICT_PERIOD_MS);
+	 const float G_MPS2=9.8100000f;
+	 const float SAMPLE_TIME_MS = 50;
+	 const float COMP_FILT_ALPHA = 0.05000000f;
 
-/* USER CODE BEGIN Header_EKFupdate */
-/**
-* @brief Function implementing the KalmanUpdate thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_EKFupdate */
-//void EKFupdate(void const * argument)
-//{
-//  /* USER CODE BEGIN EKFupdate */
-//  /* Infinite loop */
-//  for(;;)
-// {
-////	if(mpu6050.acc_mps2[0]!=0.0f && mpu6050.acc_mps2[1]!=0.0f&& mpu6050.acc_mps2[2]!=0.0f)
-////		EKF_Update(&ekf,mpu6050.acc_mps2[0], mpu6050.acc_mps2[1], mpu6050.acc_mps2[2]);
-////    osDelay(KALMAN_UPDATE_PERIOD_MS);
-//  }
-//  /* USER CODE END EKFupdate */
-//}
+	 //accelerometer measurements
+	 float ax_mps2=mpu6050.acc_mps2[0];
+	 float ay_mps2=mpu6050.acc_mps2[1];
+	 float az_mps2=mpu6050.acc_mps2[2];
+
+	 // estimate angles with accelero measurements
+	 if( ax_mps2!=0 && ay_mps2!=0 && az_mps2!=0){
+		 float phiHat_acc_rad=atanf(ay_mps2/az_mps2);
+		 float thetaHat_acc_rad=asinf(ax_mps2/G_MPS2);
+
+
+		 // gyro measurements
+		 float p_rps=mpu6050.gyr_rps[0];
+		 float q_rps=mpu6050.gyr_rps[1];
+		 float r_rps=mpu6050.gyr_rps[2];
+
+		 // Body to Euler rates
+		 float phiDot_rps=p_rps+tanf(thetaHat_rad)*(sinf(phiHat_rad)*q_rps + cosf(phiHat_rad)*r_rps);
+		 float thetaDot_rps = cosf(phiHat_rad)*q_rps - sinf(phiHat_rad) * r_rps;
+
+		 // Combine accelerometer and gyro readings to get better estimate of roll and pitch
+
+		 phiHat_rad= COMP_FILT_ALPHA*phiHat_acc_rad+(1.0f - COMP_FILT_ALPHA)*(phiHat_rad + (SAMPLE_TIME_MS/1000.0f)*phiDot_rps);
+
+		 thetaHat_rad=COMP_FILT_ALPHA*thetaHat_acc_rad+(1.0f-COMP_FILT_ALPHA)*(thetaHat_rad+(SAMPLE_TIME_MS/1000.0f)*thetaDot_rps);
+
+		 phiHat_deg=phiHat_rad*RAD_TO_DEG;
+		 thetaHat_deg=thetaHat_rad*RAD_TO_DEG;
+
+		 if(ax_mps2>0.07f)
+			 velocity=velocity+(SAMPLE_TIME_MS/1000.0f)*ax_mps2;
+
+	 }
+
+	 osDelay(SAMPLE_TIME_MS);
+
+  }
+  /* USER CODE END EKFpredict */
+}
 
 /**
   * @brief  Period elapsed callback in non blocking mode
