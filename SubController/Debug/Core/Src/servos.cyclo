@@ -1,5 +1,5 @@
-../Core/Src/servos.c:8:6:turnLeft	5
-../Core/Src/servos.c:23:6:turnRight	5
-../Core/Src/servos.c:38:6:surface	5
-../Core/Src/servos.c:50:6:dive	5
+../Core/Src/servos.c:8:6:turnRight	1
+../Core/Src/servos.c:23:6:turnLeft	1
+../Core/Src/servos.c:38:6:dive	1
+../Core/Src/servos.c:50:6:surface	1
 ../Core/Src/servos.c:61:6:neutralRudders	1

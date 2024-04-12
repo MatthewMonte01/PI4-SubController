@@ -1,5 +1,5 @@
-../Core/Src/servos.c:8:6:turnLeft	4	static
-../Core/Src/servos.c:23:6:turnRight	4	static
-../Core/Src/servos.c:38:6:surface	4	static
-../Core/Src/servos.c:50:6:dive	4	static
+../Core/Src/servos.c:8:6:turnRight	4	static
+../Core/Src/servos.c:23:6:turnLeft	4	static
+../Core/Src/servos.c:38:6:dive	4	static
+../Core/Src/servos.c:50:6:surface	4	static
 ../Core/Src/servos.c:61:6:neutralRudders	4	static

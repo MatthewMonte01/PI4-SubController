@@ -56,8 +56,8 @@ typedef struct{
 	// DMA rx buffer
 	uint8_t rxData[14];
 	// DMA flags
-	volatile uint8_t rxFlag;
-	volatile uint8_t dataReadyFlag;
+  volatile uint8_t rxFlag;
+  volatile uint8_t dataReadyFlag;
 
 	// Calibration offsets
 	float gyroOffsets[3];

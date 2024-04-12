@@ -316,7 +316,6 @@ int main(void)
   uint8_t rec;
   HAL_StatusTypeDef stat;
   stat=HAL_I2C_Mem_Read (&hi2c1,MPU6050ADDR,WHO_AM_I_REG,I2C_MEMADD_SIZE_8BIT,&rec,1,100);
-
   Bar30init(&pressureSensor, &hi2c2);
   uint8_t i2cGood=0;
   i2cGood=Bar30reset(&pressureSensor);
