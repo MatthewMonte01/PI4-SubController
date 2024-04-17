@@ -1,0 +1,500 @@
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file           : main.c
+  * @brief          : Main program body
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2024 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include "stdio.h"
+#include <string.h>
+#include "bitmaps.h"
+#include <math.h>
+#include "ILI9488.h"
+
+
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+# define DEG_2_RAD 0.0174533f
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+SPI_HandleTypeDef hspi1;
+
+UART_HandleTypeDef huart1;
+DMA_HandleTypeDef hdma_usart1_rx;
+
+/* USER CODE BEGIN PV */
+
+uint8_t RxBuffer[25];
+uint8_t rxComplete=0;
+uint8_t firstReception=1;
+float depth;
+float velocity;
+float pitch=5.0f; // negative pitch means climbing
+float roll=-3.0f*DEG_2_RAD;;
+float yaw=1.0f;
+
+/* USER CODE END PV */
+
+/* Private function prototypes -----------------------------------------------*/
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
+static void MX_USART1_UART_Init(void);
+static void MX_SPI1_Init(void);
+/* USER CODE BEGIN PFP */
+
+/* USER CODE END PFP */
+
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	rxComplete=1;
+	firstReception=0;
+}
+
+
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+
+  /* USER CODE BEGIN 1 */
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_DMA_Init();
+  MX_USART1_UART_Init();
+  MX_SPI1_Init();
+  /* USER CODE BEGIN 2 */
+  lcd_init_spi();
+
+  	  // Sky and ground
+     fill_rectangle(0, 0, WIDTH, HEIGHT/2, COLOR_BLUE);//
+     fill_rectangle(0, HEIGHT/2, WIDTH, HEIGHT, COLOR_BROWN); //
+
+     // Pitch indicators lower screen
+     fill_rectangle(WIDTH/2-15, HEIGHT/2+15, WIDTH/2+15, HEIGHT/2+16, COLOR_WHITE);
+     fill_rectangle(WIDTH/2-30, HEIGHT/2+30, WIDTH/2+30, HEIGHT/2+31, COLOR_WHITE);
+     fill_rectangle(WIDTH/2-15, HEIGHT/2+45, WIDTH/2+15, HEIGHT/2+46, COLOR_WHITE);
+     fill_rectangle(WIDTH/2-30, HEIGHT/2+60, WIDTH/2+30, HEIGHT/2+61, COLOR_WHITE);
+     draw_string(WIDTH/2-53,HEIGHT/2+27, COLOR_WHITE, 1, "10");
+     draw_string(WIDTH/2+33,HEIGHT/2+27, COLOR_WHITE, 1, "10");
+     draw_string(WIDTH/2-53,HEIGHT/2+57, COLOR_WHITE, 1, "20");
+     draw_string(WIDTH/2+33,HEIGHT/2+57, COLOR_WHITE, 1, "20");
+
+     // Pitch indicators upper screen
+     fill_rectangle(WIDTH/2-15, HEIGHT/2-16, WIDTH/2+15,HEIGHT/2-15, COLOR_WHITE);
+     fill_rectangle(WIDTH/2-30, HEIGHT/2-31, WIDTH/2+30, HEIGHT/2-30, COLOR_WHITE);
+     fill_rectangle(WIDTH/2-15, HEIGHT/2-46, WIDTH/2+15, HEIGHT/2-45, COLOR_WHITE);
+     fill_rectangle(WIDTH/2-30, HEIGHT/2-61, WIDTH/2+30, HEIGHT/2-60, COLOR_WHITE);
+     draw_string(WIDTH/2-53,HEIGHT/2-27, COLOR_WHITE, 1, "10");
+     draw_string(WIDTH/2+33,HEIGHT/2-27, COLOR_WHITE, 1, "10");
+     draw_string(WIDTH/2-53,HEIGHT/2-65, COLOR_WHITE, 1, "20");
+     draw_string(WIDTH/2+33,HEIGHT/2-65, COLOR_WHITE, 1, "20");
+
+     // cross heirs
+     fill_rectangle(WIDTH/2-60, HEIGHT/2-2, WIDTH/2-15,HEIGHT/2+2, COLOR_MAGENTA);
+     fill_rectangle(WIDTH/2+15, HEIGHT/2-2, WIDTH/2+60,HEIGHT/2+2, COLOR_MAGENTA);
+     fill_rectangle(WIDTH/2-5, HEIGHT/2-2, WIDTH/2+5,HEIGHT/2+2, COLOR_MAGENTA);
+     fill_rectangle(WIDTH/2+15, HEIGHT/2, WIDTH/2+16,HEIGHT/2+6, COLOR_MAGENTA);
+     fill_rectangle(WIDTH/2-15, HEIGHT/2, WIDTH/2-14,HEIGHT/2+6, COLOR_MAGENTA);
+
+     //Speed Depth Roll Time and pitch values
+     draw_string(WIDTH/2-80, HEIGHT/2+100, COLOR_WHITE, 1, "ROLL:");
+     draw_string(WIDTH/2-80,  HEIGHT/2+130, COLOR_WHITE, 1, "PITCH:");
+     draw_string(WIDTH/2+30,  HEIGHT/2+100, COLOR_WHITE, 1, "DEPTH:");
+     draw_string(WIDTH/2+30,  HEIGHT/2+130, COLOR_WHITE, 1, "TIME:");
+     draw_string(WIDTH/2+30,  HEIGHT/2+130, COLOR_WHITE, 1, "TIME:");
+     draw_string(WIDTH/2-20,  HEIGHT/2-115, COLOR_WHITE, 1, "SPEED:");
+
+
+     // Turning indicator
+     if(yaw<-0.05f)
+    	fillTriangle(WIDTH/2+150, HEIGHT/2-100, WIDTH/2+70, HEIGHT/2-70, WIDTH/2+70, HEIGHT/2-130, COLOR_MAGENTA);
+     if(yaw>0.05f);
+     	 fillTriangle(WIDTH/2-150, HEIGHT/2-100, WIDTH/2-70, HEIGHT/2-70, WIDTH/2-70, HEIGHT/2-130, COLOR_MAGENTA);
+
+
+     // new horizon
+
+
+        // Calculate two points for the horizon line
+
+        // Draw the horizon line
+
+
+     int y1= HEIGHT/2-pitch*3-WIDTH/2*tan(roll);
+     int y2=HEIGHT/2-pitch*3+WIDTH/2*tan(roll);
+     int xtr1,ytr1,xtr2,ytr2,xtr3,ytr3;
+	 drawLine(0, y1,WIDTH,y2,COLOR_WHITE);
+	 // get the 3 points that form a triangle
+	 xtr1=0;
+	 ytr1=HEIGHT/2;
+	 xtr2=0;
+	 ytr2=y1;
+	float m=(float)(y2-y1)/WIDTH;
+	xtr3=round((HEIGHT/2-y1)/m);
+	ytr3=HEIGHT/2;
+	 if (roll<=0)
+	{
+		fillTriangle( xtr1,ytr1,xtr2,ytr2,xtr3,ytr3, COLOR_BLUE);
+		fillTriangle( xtr3,HEIGHT/2,WIDTH,y2,WIDTH,HEIGHT/2, COLOR_BROWN);
+		drawLine(0, y1,WIDTH,y2,COLOR_WHITE);
+	 }
+
+	 if (roll>0)
+	 {
+		fillTriangle( xtr1,ytr1,xtr2,ytr2,xtr3,ytr3, COLOR_BROWN);
+		fillTriangle( xtr3,HEIGHT/2,WIDTH,y2,WIDTH,HEIGHT/2, COLOR_BLUE);
+		drawLine(0, y1,WIDTH,y2,COLOR_WHITE);
+
+	 }
+
+	 int prev_y1=y1;
+	 int prev_y2=y2;
+	 int prev_xtr1=xtr1;
+	 int prev_xtr2=xtr2;
+	 int prev_xtr3=xtr3;
+	 int prev_ytr1=ytr1;
+	 int prev_ytr2=ytr2;
+	 int prev_ytr3=ytr3;
+
+
+
+
+
+
+
+
+
+//     int x = 0, y = 0;
+//       int old_x, old_y;
+//       int increment_x = 25;
+//       int increment_y = 15;
+//       int x_direction = 1;
+//       int y_direction = 1;
+
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+    while (1)
+    {
+    	 if(rxComplete==1)
+    		  {
+    			  int i;
+    			      for (i = 0; i < 25; i++) {
+    			          if (RxBuffer[i] == 'D' && i + 4 < 25) {
+
+    			              *((uint8_t*)&depth + 0) = RxBuffer[i + 1];
+    			              *((uint8_t*)&depth + 1) = RxBuffer[i + 2];
+    			              *((uint8_t*)&depth + 2) = RxBuffer[i + 3];
+    			              *((uint8_t*)&depth + 3) = RxBuffer[i + 4];
+
+    			          }
+    			          else if (RxBuffer[i] == 'R' && i + 4 < 25) {
+
+    			              *((uint8_t*)&roll + 0) = RxBuffer[i + 1];
+    			              *((uint8_t*)&roll + 1) = RxBuffer[i + 2];
+    			              *((uint8_t*)&roll + 2) = RxBuffer[i + 3];
+    			              *((uint8_t*)&roll + 3) = RxBuffer[i + 4];
+
+    			          }
+    			          else if (RxBuffer[i] == 'P' && i + 4 < 25) {
+
+    			              *((uint8_t*)&pitch + 0) = RxBuffer[i + 1];
+    			              *((uint8_t*)&pitch + 1) = RxBuffer[i + 2];
+    			              *((uint8_t*)&pitch + 2) = RxBuffer[i + 3];
+    			              *((uint8_t*)&pitch + 3) = RxBuffer[i + 4];
+
+    			          }
+
+    			          else if (RxBuffer[i] == 'V' && i + 4 < 25) {
+
+    						  *((uint8_t*)&velocity + 0) = RxBuffer[i + 1];
+    						  *((uint8_t*)&velocity + 1) = RxBuffer[i + 2];
+    						  *((uint8_t*)&velocity + 2) = RxBuffer[i + 3];
+    						  *((uint8_t*)&velocity + 3) = RxBuffer[i + 4];
+
+    			         		          }
+    			          else if (RxBuffer[i] == 'Y' && i + 4 < 25) {
+
+    			              *((uint8_t*)&yaw + 0) = RxBuffer[i + 1];
+    			              *((uint8_t*)&yaw + 1) = RxBuffer[i + 2];
+    			              *((uint8_t*)&yaw + 2) = RxBuffer[i + 3];
+    			              *((uint8_t*)&yaw + 3) = RxBuffer[i + 4];
+
+    			          }
+    			      }
+    		  }
+
+
+  	 //HAL_Delay(500);
+
+
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+    }
+  /* USER CODE END 3 */
+}
+
+/**
+  * @brief System Clock Configuration
+  * @retval None
+  */
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+
+  /** Configure the main internal regulator output voltage
+  */
+  __HAL_RCC_PWR_CLK_ENABLE();
+  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
+
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = 8;
+  RCC_OscInitStruct.PLL.PLLN = 180;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
+  RCC_OscInitStruct.PLL.PLLQ = 2;
+  RCC_OscInitStruct.PLL.PLLR = 2;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Activate the Over-Drive mode
+  */
+  if (HAL_PWREx_EnableOverDrive() != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/**
+  * @brief SPI1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SPI1_Init(void)
+{
+
+  /* USER CODE BEGIN SPI1_Init 0 */
+
+  /* USER CODE END SPI1_Init 0 */
+
+  /* USER CODE BEGIN SPI1_Init 1 */
+
+  /* USER CODE END SPI1_Init 1 */
+  /* SPI1 parameter configuration*/
+  hspi1.Instance = SPI1;
+  hspi1.Init.Mode = SPI_MODE_MASTER;
+  hspi1.Init.Direction = SPI_DIRECTION_1LINE;
+  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi1.Init.CRCPolynomial = 10;
+  if (HAL_SPI_Init(&hspi1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI1_Init 2 */
+
+  /* USER CODE END SPI1_Init 2 */
+
+}
+
+/**
+  * @brief USART1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART1_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART1_Init 0 */
+
+  /* USER CODE END USART1_Init 0 */
+
+  /* USER CODE BEGIN USART1_Init 1 */
+
+  /* USER CODE END USART1_Init 1 */
+  huart1.Instance = USART1;
+  huart1.Init.BaudRate = 115200;
+  huart1.Init.WordLength = UART_WORDLENGTH_8B;
+  huart1.Init.StopBits = UART_STOPBITS_1;
+  huart1.Init.Parity = UART_PARITY_NONE;
+  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART1_Init 2 */
+
+  /* USER CODE END USART1_Init 2 */
+
+}
+
+/**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA2_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA2_Stream2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA2_Stream2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA2_Stream2_IRQn);
+
+}
+
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, TFT_CS_Pin|TFT_RST_Pin|TFT_DC_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : TFT_CS_Pin TFT_RST_Pin TFT_DC_Pin */
+  GPIO_InitStruct.Pin = TFT_CS_Pin|TFT_RST_Pin|TFT_DC_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
+}
+
+/* USER CODE BEGIN 4 */
+
+/* USER CODE END 4 */
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
+  }
+  /* USER CODE END Error_Handler_Debug */
+}
+
+#ifdef  USE_FULL_ASSERT
+/**
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
+void assert_failed(uint8_t *file, uint32_t line)
+{
+  /* USER CODE BEGIN 6 */
+  /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* USER CODE END 6 */
+}
+#endif /* USE_FULL_ASSERT */

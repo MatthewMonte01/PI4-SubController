@@ -172,13 +172,13 @@ void calculatePressure(Bar30* sensor)
 	offset=((int64_t)sensor->calibrationResult[2]*65536l) + ((int64_t)(sensor->calibrationResult[4] * dT)/128l);
 	sensitivity = (((int64_t)sensor->calibrationResult[1]*32768l)) + (((int64_t)(dT * sensor->calibrationResult[3]))/256l);
 	sensor->actualPressure=(sensor->rawPressure*sensitivity/(2097152l)-offset)/(8192l);
-	sensor->actualPressure=sensor->actualPressure/10.0f; // result in millibar
+	sensor->pressure_mbar=(float)(sensor->actualPressure)/10.0f; // result in millibar
 
 
 }
 float calculateDepth(Bar30* sensor)
 {
-	sensor->depth=(sensor->actualPressure-1013.0f)/(FLUID_DENSITY*9.80665f);
+	sensor->depth=(sensor->pressure_mbar*100.0f-101300.0f)/(FLUID_DENSITY*9.80665f);
 	return sensor->depth;
 }
 

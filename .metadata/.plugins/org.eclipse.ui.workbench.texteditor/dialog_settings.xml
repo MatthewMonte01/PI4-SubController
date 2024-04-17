@@ -1,38 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="RxBuffer"/>
+		<item key="selection" value="Triangle"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
-			<item value="RxBuffer"/>
-			<item value="buffer"/>
-			<item value="velocity"/>
-			<item value="phi"/>
-			<item value="theta"/>
-			<item value="atanf"/>
-			<item value="ekf"/>
-			<item value="Txbuf"/>
-			<item value="tx"/>
-			<item value="HAL_UART_Transmit"/>
-			<item value="RXNE"/>
-			<item value="Handle"/>
-			<item value="huart"/>
-			<item value="huart6"/>
-			<item value="printf"/>
+			<item value="triangle"/>
+			<item value="tria"/>
+			<item value="tri"/>
+			<item value="320"/>
+			<item value="120"/>
+			<item value="ypr[1]"/>
+			<item value="ypr[2]"/>
+			<item value="drawLine"/>
+			<item value="draw_line"/>
+			<item value="arrow"/>
+			<item value="ILI9341_drawLine"/>
+			<item value="ILI9341_DrawPixel"/>
+			<item value="ILI9431_DrawPixel"/>
+			<item value="BROWN"/>
+			<item value="BLACK"/>
 		</list>
 		<list key="replacehistory">
+			<item value="WIDTH"/>
+			<item value="WIDTH/2"/>
+			<item value="roll"/>
+			<item value="pitch"/>
+			<item value="draw_line"/>
+			<item value="drawLine"/>
+			<item value="draw_pixel"/>
+			<item value="COLOR_WHITE"/>
+			<item value="hspi1"/>
+			<item value="TFT_RST"/>
+			<item value="TFT_CS"/>
+			<item value="TFT_DC"/>
 			<item value="RxBuffer"/>
 			<item value=" "/>
 			<item value=""/>
 		</list>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
-		<item key="DIALOG_X_ORIGIN" value="65"/>
-		<item key="DIALOG_Y_ORIGIN" value="307"/>
+		<item key="DIALOG_X_ORIGIN" value="1380"/>
+		<item key="DIALOG_Y_ORIGIN" value="465"/>
 		<item key="DIALOG_WIDTH" value="322"/>
 		<item key="DIALOG_HEIGHT" value="391"/>
 		<item key="DIALOG_FONT_NAME" value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI"/>

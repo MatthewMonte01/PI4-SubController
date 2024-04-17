@@ -25,7 +25,7 @@
 ../Core/Src/main.c:1073:6:defaultTask	16	static
 ../Core/Src/main.c:1091:6:sendDataToScreen	80	static
 ../Core/Src/main.c:1158:6:updateControlLoop	16	static
-../Core/Src/main.c:1220:6:recordSDdata	264	static
+../Core/Src/main.c:1220:6:recordSDdata	312	static
 ../Core/Src/main.c:1289:6:getBar30Data	16	static
 ../Core/Src/main.c:1309:6:EKFpredict	80	static
 ../Core/Src/main.c:1370:6:HAL_TIM_PeriodElapsedCallback	16	static

@@ -1,0 +1,44 @@
+21:05:59 **** Incremental Build of configuration Debug for project ILI9488 GUI ****
+make -j6 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../fonts -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc "../Core/Src/stm32f4xx_hal_msp.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../fonts -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/stm32f4xx_hal_msp.d" -MT"Core/Src/stm32f4xx_hal_msp.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/stm32f4xx_hal_msp.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:119:8: warning: unused variable 'y_direction' [-Wunused-variable]
+  119 |    int y_direction = 1;
+      |        ^~~~~~~~~~~
+../Core/Src/main.c:118:8: warning: unused variable 'x_direction' [-Wunused-variable]
+  118 |    int x_direction = 1;
+      |        ^~~~~~~~~~~
+../Core/Src/main.c:117:8: warning: unused variable 'increment_y' [-Wunused-variable]
+  117 |    int increment_y = 15;
+      |        ^~~~~~~~~~~
+../Core/Src/main.c:116:8: warning: unused variable 'increment_x' [-Wunused-variable]
+  116 |    int increment_x = 25;
+      |        ^~~~~~~~~~~
+../Core/Src/main.c:115:15: warning: unused variable 'old_y' [-Wunused-variable]
+  115 |    int old_x, old_y;
+      |               ^~~~~
+../Core/Src/main.c:115:8: warning: unused variable 'old_x' [-Wunused-variable]
+  115 |    int old_x, old_y;
+      |        ^~~~~
+../Core/Src/main.c:114:15: warning: unused variable 'y' [-Wunused-variable]
+  114 |    int x = 0, y = 0;
+      |               ^
+../Core/Src/main.c:114:8: warning: unused variable 'x' [-Wunused-variable]
+  114 |    int x = 0, y = 0;
+      |        ^
+arm-none-eabi-gcc -o "ILI9488 GUI.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\bozo2\Documents\ILI9488_Demo\3.5 ILI9488 SPI DMA STM32 GUI STM32F401\STM32F401CDUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ILI9488 GUI.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+C:/ST/STM32CubeIDE_1.13.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: warning: ILI9488 GUI.elf has a LOAD segment with RWX permissions
+Finished building target: ILI9488 GUI.elf
+ 
+arm-none-eabi-size  ILI9488\ GUI.elf 
+arm-none-eabi-objdump -h -S ILI9488\ GUI.elf  > "ILI9488 GUI.list"
+   text	   data	    bss	    dec	    hex	filename
+  17172	     20	  18284	  35476	   8a94	ILI9488 GUI.elf
+Finished building: default.size.stdout
+ 
+Finished building: ILI9488 GUI.list
+ 
+
+21:06:01 Build Finished. 0 errors, 9 warnings. (took 1s.604ms)
+

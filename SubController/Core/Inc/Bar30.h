@@ -29,6 +29,7 @@ typedef struct
 	uint32_t rawPressure;
 	uint32_t rawTemperature;
 	int32_t actualPressure;
+	float pressure_mbar;
 	int32_t actualTemperature;
 	uint16_t calibrationResult[7]; // [CRC C1 C2 C3 C4 C5 C6 C7]
 	uint8_t rxFlag;

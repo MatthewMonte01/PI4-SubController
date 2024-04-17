@@ -1,0 +1,52 @@
+17:35:42 **** Incremental Build of configuration Debug for project SUB_LCD ****
+make -j6 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F446xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:168:9: warning: implicit declaration of function 'fillTriangle'; did you mean 'fill_rectangle'? [-Wimplicit-function-declaration]
+  168 |         fillTriangle(WIDTH/2+150, HEIGHT/2-100, WIDTH/2+70, HEIGHT/2-70, WIDTH/2+70, HEIGHT/2-130, COLOR_MAGENTA);
+      |         ^~~~~~~~~~~~
+      |         fill_rectangle
+../Core/Src/main.c:169:6: warning: this 'if' clause does not guard... [-Wmisleading-indentation]
+  169 |      if(yaw>0.05f);
+      |      ^~
+../Core/Src/main.c:170:10: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the 'if'
+  170 |          fillTriangle(WIDTH/2-150, HEIGHT/2-100, WIDTH/2-70, HEIGHT/2-70, WIDTH/2-70, HEIGHT/2-130, COLOR_MAGENTA);
+      |          ^~~~~~~~~~~~
+../Core/Src/main.c:215:14: warning: unused variable 'prev_ytr3' [-Wunused-variable]
+  215 |          int prev_ytr3=ytr3;
+      |              ^~~~~~~~~
+../Core/Src/main.c:214:14: warning: unused variable 'prev_ytr2' [-Wunused-variable]
+  214 |          int prev_ytr2=ytr2;
+      |              ^~~~~~~~~
+../Core/Src/main.c:213:14: warning: unused variable 'prev_ytr1' [-Wunused-variable]
+  213 |          int prev_ytr1=ytr1;
+      |              ^~~~~~~~~
+../Core/Src/main.c:212:14: warning: unused variable 'prev_xtr3' [-Wunused-variable]
+  212 |          int prev_xtr3=xtr3;
+      |              ^~~~~~~~~
+../Core/Src/main.c:211:14: warning: unused variable 'prev_xtr2' [-Wunused-variable]
+  211 |          int prev_xtr2=xtr2;
+      |              ^~~~~~~~~
+../Core/Src/main.c:210:14: warning: unused variable 'prev_xtr1' [-Wunused-variable]
+  210 |          int prev_xtr1=xtr1;
+      |              ^~~~~~~~~
+../Core/Src/main.c:209:14: warning: unused variable 'prev_y2' [-Wunused-variable]
+  209 |          int prev_y2=y2;
+      |              ^~~~~~~
+../Core/Src/main.c:208:14: warning: unused variable 'prev_y1' [-Wunused-variable]
+  208 |          int prev_y1=y1;
+      |              ^~~~~~~
+arm-none-eabi-gcc -o "SUB_LCD.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\bozo2\Desktop\PI4\STM32_SubControllerV1\SUB_LCD\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="SUB_LCD.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: SUB_LCD.elf
+ 
+arm-none-eabi-size  SUB_LCD.elf 
+arm-none-eabi-objdump -h -S SUB_LCD.elf  > "SUB_LCD.list"
+   text	   data	    bss	    dec	    hex	filename
+  26548	     24	  18256	  44828	   af1c	SUB_LCD.elf
+Finished building: default.size.stdout
+ 
+Finished building: SUB_LCD.list
+ 
+
+17:35:43 Build Finished. 0 errors, 10 warnings. (took 1s.78ms)
+

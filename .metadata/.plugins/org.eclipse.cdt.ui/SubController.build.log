@@ -1,10 +1,10 @@
-09:49:43 **** Incremental Build of configuration Debug for project SubController ****
+08:36:15 **** Incremental Build of configuration Debug for project SubController ****
 make -j6 all 
 arm-none-eabi-size  SubController.elf 
    text	   data	    bss	    dec	    hex	filename
-  97184	    504	  28952	 126640	  1eeb0	SubController.elf
+  97024	    504	  28952	 126480	  1ee10	SubController.elf
 Finished building: default.size.stdout
  
 
-09:49:43 Build Finished. 0 errors, 0 warnings. (took 405ms)
+08:36:15 Build Finished. 0 errors, 0 warnings. (took 411ms)
 
